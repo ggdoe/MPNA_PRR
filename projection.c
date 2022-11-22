@@ -13,8 +13,7 @@ struct B_proj projection(double *A, int n, int m)
 	struct B_proj B;
 }
 
+int main()
+{
 
-// int main()
-// {
-
-// }
+}
