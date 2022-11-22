@@ -1,4 +1,4 @@
 #!/bin/sh
 
-gcc -Wall main.c -lblas
+gcc -Wall main.c tools.c -lblas
 
