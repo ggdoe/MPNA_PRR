@@ -15,7 +15,7 @@ int main()
 	//double *A = 
 	double *A = read_matrice("mat1.txt", &n, &m);
 	print_matrice(c, 2, 2);
-	print_matrice(A, 20, 20);
+	// print_matrice(A, 20, 20);
 
 	free(A);
 
