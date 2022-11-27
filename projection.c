@@ -1,7 +1,4 @@
-#include <cblas.h>
-#include <string.h>
 #include "tools.h"
-#include "math.h"
 
 //Commande : gcc projection.c tools.c -lm -lcblas -o projection_test.out && ./projection_test.out
 
