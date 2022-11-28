@@ -10,4 +10,7 @@
 void print_matrice(double *A, int n, int m);
 double * read_matrice(char *filename, int *n, int *m);
 
+// void sym_to_std(double *in, double *out, int m);
+// void std_to_sym(double *in, double *out, int m);
+
 #endif

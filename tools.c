@@ -35,3 +35,26 @@ double * read_matrice(char *filename, int *n, int *m)
 		*m = M;
 	return A;
 }
+
+// void std_to_sym(double *in, double *out, int m)
+// {
+// 	size_t shift = 0;
+
+// 	for (size_t i = 0; i < m; i++) {
+// 		memcpy(out + shift, in + i * m + i, (m - i) * sizeof(double));
+// 		shift += m - i;
+// 	}
+// }
+
+// void sym_to_std(double *in, double *out, int m)
+// {
+// 	size_t shift = 0;
+
+// 	for (size_t i = 0; i < m; i++) {
+// 		memcpy(out + i * m + i, in + shift, (m - i) * sizeof(double));
+// 		shift += m - i;
+// 		for (size_t j = i + 1; j < m; j++)
+// 			out[j * m + i] = out[i * m + j];
+// 	}
+// }
+
