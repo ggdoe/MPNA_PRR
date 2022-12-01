@@ -52,10 +52,12 @@ void resolve_sev(struct B_proj *B, int m)
 	// pour éviter de transposer A car fortran est en colmajor
 	LAPACK_dgeev("V", "N", &m, F, &m, vp_r, vp_i, vecp,
 				&m, NULL, &m, work, &lwork, &info);
+	
+	// vecp : vecteur propre selon les lignes
 
 	for(int i = 0; i < m; i++)
 		if(vp_i[i] > epsilon){
-			printf("valeur propre non reelle.\n");
+			printf("resolve_sev.c : valeur propre non reelle.\n");
 			break;
 		}
 
@@ -81,8 +83,8 @@ void resolve_sev(struct B_proj *B, int m)
 
 // 	int m = 3;
 // 	struct B_proj B;
-// 	B.Bm1 = A3;
-// 	B.Bm = A4;
+// 	B.B1 = A3;
+// 	B.B2 = A4;
 // 	// print_matrice(A3, m, m);
 // 	resolve_sev(&B, m);
 // 	// print_matrice(A, m, m);

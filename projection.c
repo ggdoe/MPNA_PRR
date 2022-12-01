@@ -50,7 +50,7 @@ void* projection(double *A, int n, int m, const double* x)
 	//printf("c à la fin\n"); print_matrice(c, 1, 2*m);
 	printf("Bm-1\n"); print_matrice(B.B2, m, m);
 	printf("Bm\n"); print_matrice(B.B1, m, m);
-	printf("Vm\n"); print_matrice(Vm, m, m);
+	printf("Vm\n"); print_matrice(Vm, n, m);
 
 	free(c);
 	free(Aj_x);
@@ -59,29 +59,29 @@ void* projection(double *A, int n, int m, const double* x)
 }
 
 
-int main()
-{
-	int n = 3, m = 3;
-	double *A, *x;
-	A = malloc(n*n*sizeof(double));
-	x = malloc(n*sizeof(double));
-	Vm = malloc(m*m*sizeof(double));
+// int main()
+// {
+// 	int n = 3, m = 3;
+// 	double *A, *x;
+// 	A = malloc(n*n*sizeof(double));
+// 	x = malloc(n*sizeof(double));
+// 	Vm = malloc(n*m*sizeof(double));
 
-	A = read_matrice("mat2.txt", &n, &m);
-	//printf("A\n"); print_matrice(A, m, m);
+// 	A = read_matrice("mat2.txt", &n, &m);
+// 	//printf("A\n"); print_matrice(A, m, m);
 
-	x[0] = 4.0; x[1] = 5.0; x[2] = 6.0;
-	double normx = cblas_ddot(n, x, 1, x, 1);
-	normalize(x, m);
+// 	x[0] = 4.0; x[1] = 5.0; x[2] = 6.0;
+// 	double normx = cblas_ddot(n, x, 1, x, 1);
+// 	normalize(x, m);
 
-	printf("x normé\n"); print_matrice(x, 1, m);
+// 	printf("x normé\n"); print_matrice(x, 1, m);
 
-	projection(A, n, m, x);
+// 	projection(A, n, m, x);
 
-	free(A);
-	free(x);
-	free(Vm);
+// 	free(A);
+// 	free(x);
+// 	free(Vm);
 
-	return 0;
-}
+// 	return 0;
+// }
 
