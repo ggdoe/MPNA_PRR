@@ -36,6 +36,12 @@ double * read_matrice(char *filename, int *n, int *m)
 	return A;
 }
 
+void normalize(double *x, int n)
+{
+	double inv_norm = 1/sqrt(cblas_ddot(n, x, 1, x, 1));
+	cblas_dscal(n, inv_norm, x, 1);
+}
+
 // void std_to_sym(double *in, double *out, int m)
 // {
 // 	size_t shift = 0;

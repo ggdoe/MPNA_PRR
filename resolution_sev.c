@@ -5,8 +5,8 @@
 
 // extern
 struct B_proj {
-	double *Bm;
-	double *Bm1;
+	double *B1;
+	double *B2;
 };
 
 void resolve_sev(struct B_proj *B, int m)
@@ -23,15 +23,15 @@ void resolve_sev(struct B_proj *B, int m)
 	// printf("----\n");
 
 	// i) inversion matrice Bm1
-	LAPACK_dgetrf(&m, &m, B->Bm1, &m, ipiv, &info);
-	LAPACK_dgetri(&m, B->Bm1, &m, ipiv, WORK, &LWORK, &info);
+	LAPACK_dgetrf(&m, &m, B->B2, &m, ipiv, &info);
+	LAPACK_dgetri(&m, B->B2, &m, ipiv, WORK, &LWORK, &info);
 
 	// print_matrice(B->Bm, m,m);
 	// printf("----dot\n");
 
 	// 2) F = inv(Bm1) * Bm
-	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1, B->Bm1, m, B->Bm, m, 0, F, m);
-	memcpy(B->Bm1, F, m*m*sizeof(double)); // A SUPPR  : déplacement de F dans Bm1 (c'était pour tester le resultat)
+	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1, B->B2, m, B->B1, m, 0, F, m);
+	memcpy(B->B2, F, m*m*sizeof(double)); // A SUPPR  : déplacement de F dans Bm1 (c'était pour tester le resultat)
 	printf("----F\n");
 	print_matrice(F, m,m);
 	
