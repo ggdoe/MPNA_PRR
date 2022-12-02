@@ -5,7 +5,7 @@
 // Vm : taille m*m
 // u : taille 1*m
 // q : taille m*m (tableau retourné)
-void* ret_esp_dep(int n, int m, const double* Vm, const double* u)
+void* retour_espace_depart(int n, int m, const double* Vm, const double* u)
 {
 	double* q = malloc(n*m*sizeof(double));
 	
@@ -19,35 +19,9 @@ void* ret_esp_dep(int n, int m, const double* Vm, const double* u)
 	// u : les vecteurs sont selon les lignes (m element par vecteur)
 	// q : les vecteurs de ritz sont selon les lignes (n element par vecteur)
 
+	// optionnel : normalisation des vecteurs de ritz
+	for(int i = 0; i < m; i++)
+		normalize(q + i*n, n);
+
 	return q;
 }
-
-// main de test
-
-// int main(int argc, char* argv[])
-// {
-// 	int m=3, n=4;
-// 	double* Vm = malloc(n*m*sizeof(double));
-// 	double* u = malloc(n*m*sizeof(double));
-// 	double* q;
-
-// 	for (size_t i = 0; i < n; i++)
-// 	{
-// 		for (size_t j = 0; j < m; j++)
-// 		{
-// 			Vm[i*m+j] = j*i+j+i;
-// 			u[i*m+j] = 2*i+j+1;
-// 		}
-// 	}
-
-// 	printf("Vm\n"); print_matrice(Vm, m, n);
-// 	printf("u\n"); print_matrice(u, m, m);
-
-// 	q = ret_esp_dep(n, m, Vm, u);
-// 	printf("q\n"); print_matrice(q, m, n);
-
-// 	free(Vm); free(u); free(q);
-
-// 	return EXIT_SUCCESS;
-// }
-

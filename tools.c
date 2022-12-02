@@ -6,7 +6,7 @@ void print_matrice(double *A, int n, int m)
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++)
-			printf("%lf " ,A[m*i + j]);
+			printf("%.3lf\t" ,A[m*i + j]);
 		printf("\n");
 	}
 }
