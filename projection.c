@@ -34,7 +34,6 @@ struct B_proj projection(double *A, int n, int m, const double* x)
 			memcpy(Vm+j*n, Aj_x, n*sizeof(double));
 
 		c[j] = cblas_ddot(n, Aj_x, 1, x, 1); //c_ij = x* A^j *x
-		printf("%lf\n", c[j]);
 	}
 
 	//Remplir Bm et Bm-1
