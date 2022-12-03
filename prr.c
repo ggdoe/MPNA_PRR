@@ -75,7 +75,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	p->Vm = malloc(LWORK*sizeof(double));
 
 	spectre->vp = malloc(m * sizeof(double));
-	spectre->vec_p = malloc(n * m * sizeof(double));
+	spectre->vec_p = malloc(LWORK * sizeof(double)); // pour une raison inconue ça crash (m=3) si je met n*m
 }
 
 static void free_prr(struct projection *p)
