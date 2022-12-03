@@ -13,9 +13,9 @@ int main()
 	double *x;
 	// double x[] = {1., 3., 7.};
 	struct spectre spectre;
-	for (size_t i = 0; i < 1000; i++)
+	// for (size_t i = 0; i < 1000; i++)
 	{
-		srand48(0);
+		// srand48(0);
 		x = rand_initial_vector(n);
 		spectre = prr(n, m, A, x, &prrinfo, 0, 1e-4);
 	}

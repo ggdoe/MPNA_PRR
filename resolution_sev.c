@@ -5,6 +5,7 @@ extern double *_tmp_mm;
 extern double *_tmp_lwork;
 extern void *_tmp_m; // ipiv ou vp_i
 
+
 void resolution_sev(struct spectre *restrict spectre, struct projection *restrict B, int m)
 {
 	// var pour LAPACK
@@ -32,9 +33,11 @@ void resolution_sev(struct spectre *restrict spectre, struct projection *restric
 				&m, NULL, &m, _tmp_lwork, &LWORK, &info);
 	// vecp : vecteur propre selon les lignes
 
+	static int _printed = 0;
 	for(int i = 0; i < m; i++)
-		if(vp_i[i] > epsilon){
-			printf("resolution_sev.c : valeur propre non reelle. Echec de l'algorithme.\n");
+		if(!_printed && vp_i[i] > epsilon){
+			printf("resolution_sev.c : valeur propre non reelle.\n");
+			_printed = 1;
 			break;
 		}
 }
