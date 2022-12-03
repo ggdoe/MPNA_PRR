@@ -9,10 +9,12 @@
 #include <math.h>
 
 #define epsilon 1.e-3
+#define print_separator(a) printf("--------- %s --------\n", a)
 
-struct B_proj {
+struct projection {
 	double *B1;
 	double *B2;
+	double *Vm;
 };
 
 struct spectre{
@@ -20,13 +22,16 @@ struct spectre{
 	double *vec_p;
 };
 
+struct spectre prr(double n, double m, double *restrict A, double *restrict x);
 
 void print_matrice(double *A, int n, int m);
 double * read_matrice(char *filename, int *n, int *m);
-struct B_proj projection(double *A, int n, int m, const double* x);
+void projection(struct projection *p, double *restrict A, int n, int m, double*restrict  x);
 void normalize(double *x, int n);
-struct spectre resolve_sev(struct B_proj *B, int m);
+struct spectre resolution_sev(struct projection *B, int m);
 void* retour_espace_depart(int n, int m, const double* Vm, const double* u);
+
+void get_new_x(int n, int m, double *x, double *residu, double *q);
 
 double* calcul_residu(int n, int m, const double* A, const double* q, const double* lambda);
 void* ret_esp_dep(int n, int m, const double* Vm, const double* u);
