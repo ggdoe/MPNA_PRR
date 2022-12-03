@@ -42,6 +42,16 @@ void normalize(double *x, int n)
 	cblas_dscal(n, inv_norm, x, 1);
 }
 
+double max(double *x, int n)
+{
+	double max = 0.;
+	for(int i = 0; i < n; i++)
+		if(x[i] > max)
+			max = x[i];
+
+	return max;
+}
+
 // void std_to_sym(double *in, double *out, int m)
 // {
 // 	size_t shift = 0;

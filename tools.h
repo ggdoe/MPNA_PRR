@@ -28,8 +28,9 @@ void normalize(double *x, int n);
 struct spectre resolve_sev(struct B_proj *B, int m);
 void* retour_espace_depart(int n, int m, const double* Vm, const double* u);
 
-double calcul_max_residu(int n, int m, const double* A, const double* q, const double* lambda);
+double* calcul_residu(int n, int m, const double* A, const double* q, const double* lambda);
 void* ret_esp_dep(int n, int m, const double* Vm, const double* u);
+double max(double *x, int n);
 
 // void sym_to_std(double *in, double *out, int m);
 // void std_to_sym(double *in, double *out, int m);
