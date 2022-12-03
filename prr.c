@@ -26,6 +26,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	init_prr(n,m, &p, &spectre);
 
 	// vérification A symétrique, sinon l'algo ne s'applique pas
+	// #pragma omp parallel for
 	for(int i = 0; i < n; i++)
 		for(int j = i+1; j < n; j++)
 			if(A[i * n + j] != A[j * n + i]){
@@ -44,7 +45,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 		residu = calcul_residu(n, m, A, &spectre); // O(m * n²)
 
 		maxres = max(residu,m);
-		printf("max : %lg\n", max(residu,m));
+		// printf("max : %lg\n", max(residu,m));
 
 		// nouveau vecteur initial :
 		get_new_x(n,m,x,residu,spectre.vec_p); // O(m * n)
