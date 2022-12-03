@@ -1,25 +1,19 @@
 #include "tools.h"
 #include <time.h>
 
-// extern double* Vm;
-
 int main()
 {
 	int n;
 	int m = 2;
+	struct prr_info prrinfo;
 
+	srand48(time(NULL));
 
 	double *A = read_matrice("mat2.txt", &n, &n);
-	double x[] = {1., 3., 7.};
-	// double x[] = {0.606, 0.515, 0.606};
-	// double x[] = {-0.610, -0.508, -0.609};
-	// double x[] = {0.681,   0.058,   -0.730};
+	double *x = rand_initial_vector(n);
+	// double x[] = {1., 3., 7.};
 	
-	srand48(0);
-	if(m > n) 
-		exit(1);
-	
-	struct spectre spectre = prr(n, m, A, x);
+	struct spectre spectre = prr(n, m, A, x, &prrinfo, 0);
 
 	print_separator("vp");
 	print_matrice(spectre.vp, 1, m);
@@ -27,8 +21,13 @@ int main()
 	print_separator("vecteur ritz");
 	print_matrice(spectre.vec_p, m, n);
 
-	free(A);
+	printf("count : %d\n", prrinfo.nb_it);
+	printf("max residu : %lg\n", prrinfo.max_residu);
 
+	free(A);
+	free(spectre.vec_p);
+	free(spectre.vp);
+	free(x);
 
 	return 0;
 }

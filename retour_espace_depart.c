@@ -1,13 +1,14 @@
 #include "tools.h"
 
-//Commande : gcc retour_espace_depart.c tools.c -lcblas -o retour_espace_depart.out && ./retour_espace_depart.out
+extern double *_tmp_lwork;
 
 // Vm : taille m*m
 // u : taille 1*m
 // q : taille m*m (tableau retourné)
-void* retour_espace_depart(int n, int m, const double* Vm, const double* u)
+void retour_espace_depart(int n, int m, const double* Vm, struct spectre* spectre)
 {
-	double* q = malloc(n*m*sizeof(double));
+	double *u = spectre->vec_p;
+	double* q = _tmp_lwork;
 	
 	// magie noire pour avoir les vecteurs de ritz selon les lignes de q
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans,
@@ -20,5 +21,7 @@ void* retour_espace_depart(int n, int m, const double* Vm, const double* u)
 	for(int i = 0; i < m; i++)
 		normalize(q + i*n, n);
 
-	return q;
+	double *swap = _tmp_lwork;
+	_tmp_lwork = spectre->vec_p;
+	spectre->vec_p = swap;
 }

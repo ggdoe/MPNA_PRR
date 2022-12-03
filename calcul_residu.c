@@ -2,14 +2,20 @@
 
 //Commande : gcc calcul_residu.c tools.c -lm -lcblas -o calcul_residu.out && ./calcul_residu.out
 
+extern double *_tmp_lwork; // size > n*m
+extern void *_tmp_m; 
+
 // A : taille m*m
 // q : taille m*m
 // lambda : taille 1*m
 // Retourne le max des résidus au carré
-double* calcul_residu(int n, int m, const double* A, const double* q, const double* lambda)
+double* calcul_residu(int n, int m, const double* A, struct spectre *spectre)
 {
-	double *residu = malloc(m * sizeof(double));
-	double* lambda_q = malloc(n*sizeof(double));
+	const double* q = spectre->vec_p;
+	const double* lambda = spectre->vp;
+
+	double *residu = (double*) _tmp_m;
+	double* lambda_q = _tmp_lwork;
 
 	for (int i = 0; i < m; i++)
 	{
@@ -20,16 +26,12 @@ double* calcul_residu(int n, int m, const double* A, const double* q, const doub
 		
 		residu[i] = cblas_ddot(m, lambda_q, 1, lambda_q, 1);
 	}
-
-	free(lambda_q);
-
 	return residu;
 }
 
 // choisie le nouveau x : combinaison linéaire en fonction des residus calculé
-void get_new_x(int n, int m, double *x, double *residu, double *q)
+void get_new_x(int n, int m, double *x, double *residu, double *vec_p)
 {
-
 		// plus un residu est faible, plus on favorise son vecteurs de ritz associé
 	for (int i = 0; i < m; i++)
 		residu[i] = 1 / residu[i];
@@ -40,14 +42,13 @@ void get_new_x(int n, int m, double *x, double *residu, double *q)
 
 
 		// 3 méthode de choix : max, pondéré, random
-	memcpy(x, q + n * cblas_idamax(m, residu, 1), n * sizeof(double));
+	memcpy(x, vec_p + n * cblas_idamax(m, residu, 1), n * sizeof(double));
 	// memset(x,0,n*sizeof(double));
 	// for (int i = 0; i < m; i++)
 	// 	cblas_daxpy(n, residu[i], q + i * n, 1, x, 1);
 	// 	cblas_daxpy(n, drand48(), q + i * n, 1, x, 1);
 
 	// étrange : l'erreur augmente avec les restarts, puis elle chute fortement (750900 --> 4.08909e-13)
-
 
 	normalize(x,n);
 }

@@ -1,23 +1,25 @@
 #include "tools.h"
 
+extern int LWORK;
+extern double *_tmp_mm;
+extern double *_tmp_lwork;
+extern void *_tmp_m; // ipiv ou vp_i
 
-struct spectre resolution_sev(struct projection *B, int m)
+void resolution_sev(struct spectre *spectre, struct projection *B, int m)
 {
 	// var pour LAPACK
 	int info;
-	int LWORK = m*m;
-	double *F = malloc(m*m * sizeof(double));
-	double *WORK = malloc(LWORK * sizeof(double));
-	int *ipiv = malloc(m * sizeof(int));
 
-	double *vp_r = malloc(m * sizeof(double));
-	double *vp_i = malloc(m * sizeof(double));
-	double *vecp = malloc(m * m * sizeof(double));
-	int lwork = m * (m < 4 ? 4 : m);
+	// alias variables
+	double *const F = _tmp_mm;
+	double *const vp_i = (double*)_tmp_m;
+	double *const vp_r = spectre->vp;
+	double *const vecp = spectre->vec_p;
+	int    *const ipiv = (int*)_tmp_m;
 
-	// i) inversion matrice Bm1
+	// i) inversion matrice Bm1 
 	LAPACK_dgetrf(&m, &m, B->B1, &m, ipiv, &info);
-	LAPACK_dgetri(&m, B->B1, &m, ipiv, WORK, &LWORK, &info);
+	LAPACK_dgetri(&m, B->B1, &m, ipiv, _tmp_lwork, &LWORK, &info);
 	
 	// 2) F = inv(Bm1) * Bm
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1, B->B1, m, B->B2, m, 0, F, m);
@@ -27,7 +29,7 @@ struct spectre resolution_sev(struct projection *B, int m)
 	// on veut les vecteur propre à gauche pour éviter 
 	// de transposer A car fortran est en colmajor
 	LAPACK_dgeev("V", "N", &m, F, &m, vp_r, vp_i, vecp,
-				&m, NULL, &m, WORK, &lwork, &info);
+				&m, NULL, &m, _tmp_lwork, &LWORK, &info);
 	// vecp : vecteur propre selon les lignes
 
 	for(int i = 0; i < m; i++)
@@ -35,9 +37,4 @@ struct spectre resolution_sev(struct projection *B, int m)
 			printf("resolution_sev.c : valeur propre non reelle. Echec de l'algorithme.\n");
 			break;
 		}
-
-	// free(WORK);
-	// free(ipiv);
-	struct spectre spectre = {vp_r, vecp};
-	return spectre;
 }

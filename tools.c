@@ -11,6 +11,14 @@ void print_matrice(double *A, int n, int m)
 	}
 }
 
+double *rand_initial_vector(int n)
+{
+	double *x = malloc(n * sizeof(double));
+	for(int i = 0; i < n; i++)
+		x[i] = 2 * drand48() - 1.;
+	return x;
+}
+
 // A = randi(n,n); A = A * transpose(A); A = A / median(median(A)); [v1, v2] = eig(A); A,v1,v2
 
 // row major (n,m)
