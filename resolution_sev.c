@@ -5,7 +5,7 @@ extern double *_tmp_mm;
 extern double *_tmp_lwork;
 extern void *_tmp_m; // ipiv ou vp_i
 
-void resolution_sev(struct spectre *spectre, struct projection *B, int m)
+void resolution_sev(struct spectre *restrict spectre, struct projection *restrict B, int m)
 {
 	// var pour LAPACK
 	int info;

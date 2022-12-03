@@ -5,7 +5,7 @@ extern double *_tmp_lwork;
 // Vm : taille m*m
 // u : taille 1*m
 // q : taille m*m (tableau retourné)
-void retour_espace_depart(int n, int m, const double* Vm, struct spectre* spectre)
+void retour_espace_depart(int n, int m, const double *restrict Vm, struct spectre *restrict spectre)
 {
 	double *u = spectre->vec_p;
 	double* q = _tmp_lwork;

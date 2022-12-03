@@ -4,16 +4,16 @@
 int main()
 {
 	int n;
-	int m = 2;
+	int m = 4;
 	struct prr_info prrinfo;
 
 	srand48(time(NULL));
 
-	double *A = read_matrice("mat2.txt", &n, &n);
+	double *A = read_matrice("mat3.txt", &n, &n);
 	double *x = rand_initial_vector(n);
 	// double x[] = {1., 3., 7.};
 	
-	struct spectre spectre = prr(n, m, A, x, &prrinfo, 0);
+	struct spectre spectre = prr(n, m, A, x, &prrinfo, 0, 1e-4);
 
 	print_separator("vp");
 	print_matrice(spectre.vp, 1, m);

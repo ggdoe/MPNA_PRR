@@ -8,8 +8,7 @@ void *_tmp_m; // ipiv ou vp_i   (size m)
 static void init_prr(int n, int m, struct projection *p, struct spectre *spectre);
 static void free_prr(struct projection *p);
 
-
-struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *prrinfo, int max_it)
+struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon)
 {
 	struct projection p;
 	struct spectre spectre;
@@ -45,14 +44,14 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 		residu = calcul_residu(n, m, A, &spectre);
 
 		maxres = max(residu,m);
-		// printf("max : %lg\n", max(residu,m));
+		printf("max : %lg\n", max(residu,m));
 
 		// nouveau vecteur initial :
 		get_new_x(n,m,x,residu,spectre.vec_p);
 
 		if(++count >= max_it)
 			break;
-	}while(maxres > 1e-4);
+	}while(maxres > _epsilon);
 
 	free_prr(&p);
 	if(prrinfo != NULL){
@@ -63,7 +62,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	return spectre;
 }
 
-static void init_prr(int n, int m, struct projection *p, struct spectre *spectre)
+static void init_prr(int n, int m, struct projection *restrict p, struct spectre *restrict spectre)
 {
 	LWORK = n * (m < 4 ? 4 : m); // 4*n   ou   n*m
 	_tmp_mm = malloc(m*m * sizeof(double));
