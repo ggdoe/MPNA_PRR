@@ -38,16 +38,16 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	do
 	{
 		// algorithme PRR:
-		projection(&p, A, n, m, x);
-		resolution_sev(&spectre, &p,m);
-		retour_espace_depart(n, m, p.Vm, &spectre);
-		residu = calcul_residu(n, m, A, &spectre);
+		projection(&p, A, n, m, x); // O(m * n²)
+		resolution_sev(&spectre, &p,m); // O(m^3)
+		retour_espace_depart(n, m, p.Vm, &spectre); // O(n * m²)
+		residu = calcul_residu(n, m, A, &spectre); // O(m * n²)
 
 		maxres = max(residu,m);
 		printf("max : %lg\n", max(residu,m));
 
 		// nouveau vecteur initial :
-		get_new_x(n,m,x,residu,spectre.vec_p);
+		get_new_x(n,m,x,residu,spectre.vec_p); // O(m * n)
 
 		if(++count >= max_it)
 			break;
