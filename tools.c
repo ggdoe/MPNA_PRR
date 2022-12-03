@@ -19,6 +19,12 @@ double * read_matrice(char *filename, int *n, int *m)
 	int N, M;
 	FILE *fd = fopen(filename, "r");
 
+	if( fd == NULL )
+	{
+		fprintf(stderr, "Erreur lors de l'exécution de fopen(). Il est probable que le fichier %s ne soit pas présent dans le dossier courant.\n", filename);
+		exit(EXIT_FAILURE);
+	}
+
 	fscanf(fd, "%d", &N);
 	fscanf(fd, "%d", &M);
 
