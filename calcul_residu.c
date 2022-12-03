@@ -22,9 +22,9 @@ double* calcul_residu(int n, int m, const double *restrict A, struct spectre *re
 		
 		//A_q = A * q_i - lambda_i * q_i 
 		// on decale lambda_q pour eviter les conflits des threads (et on a la place)
-		cblas_dgemv(CblasRowMajor, CblasNoTrans, n, n, 1, A, n, (q + i*n), 1, -lambda[i], lambda_q + i*n, 1); 
+		DGEMV(CblasRowMajor, CblasNoTrans, n, n, 1, A, n, (q + i*n), 1, -lambda[i], lambda_q + i*n, 1); 
 		
-		residu[i] = cblas_ddot(m, lambda_q + i*n, 1, lambda_q + i*n, 1);
+		residu[i] = DDOT(m, lambda_q + i*n, 1, lambda_q + i*n, 1);
 	}
 	return residu;
 }
@@ -38,7 +38,7 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 		residu[i] = 1 / residu[i];
 
 		// normalisation avec norme-1 ou norme-2
-	// cblas_dscal(m, 1 / cblas_dasum(m, residu, 1), residu, 1);
+	// DSCAL(m, 1 / DASUM(m, residu, 1), residu, 1);
 	// normalize(residu,m);
 
 
@@ -46,8 +46,8 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 	// memcpy(x, vec_p + n * cblas_idamax(m, residu, 1), n * sizeof(double));
 	memset(x,0,n*sizeof(double));
 	for (int i = 0; i < m; i++) // non parallélisable, daxpy n'est pas atomic
-		// cblas_daxpy(n, residu[i], vec_p + i * n, 1, x, 1);
-		cblas_daxpy(n, drand48(), vec_p + i * n, 1, x, 1);
+		// DAXPY(n, residu[i], vec_p + i * n, 1, x, 1);
+		DAXPY(n, drand48(), vec_p + i * n, 1, x, 1);
 
 	// étrange : l'erreur augmente avec les restarts, puis elle chute fortement (750900 --> 4.08909e-13)
 

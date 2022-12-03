@@ -11,7 +11,7 @@ void retour_espace_depart(int n, int m, const double *restrict Vm, struct spectr
 	double* q = _tmp_lwork;
 	
 	// magie noire pour avoir les vecteurs de ritz selon les lignes de q
-	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans,
+	DGEMM(CblasColMajor, CblasNoTrans, CblasNoTrans,
 		n, m, m, 1, Vm, n, u, m, 0, q, n); //qi = Vm * ui
 	// Vm : les vecteurs sont selon les lignes (n element par vecteur)
 	// u : les vecteurs sont selon les lignes (m element par vecteur)

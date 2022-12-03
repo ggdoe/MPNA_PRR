@@ -52,8 +52,8 @@ double * read_matrice(char *filename, int *n, int *m)
 
 void normalize(double *x, int n)
 {
-	double inv_norm = 1/sqrt(cblas_ddot(n, x, 1, x, 1));
-	cblas_dscal(n, inv_norm, x, 1);
+	double inv_norm = 1/sqrt(DDOT(n, x, 1, x, 1));
+	DSCAL(n, inv_norm, x, 1);
 }
 
 double max(double *x, int n)

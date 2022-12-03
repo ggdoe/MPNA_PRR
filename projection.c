@@ -11,11 +11,11 @@ void projection(struct projection *p, double *restrict A, int n, int m, double *
 	{
 		memcpy(p->Vm + j*n, x, n*sizeof(double));
 
-		cblas_dgemv(CblasRowMajor, CblasNoTrans, 
+		DGEMV(CblasRowMajor, CblasNoTrans, 
 			n, n, 1, A, n, p->Vm + j*n /*=x*/ , 1, 0, x, 1); //Aj_x = A^j *x
 
-		c[2 * j] = cblas_ddot(n, p->Vm + j*n, 1, p->Vm + j*n, 1); //c_ij = x* A^j *x
-		c[2 * j + 1] = cblas_ddot(n, x, 1, p->Vm + j*n, 1); //c_ij = x* A^j *x
+		c[2 * j] = DDOT(n, p->Vm + j*n, 1, p->Vm + j*n, 1); //c_ij = x* A^j *x
+		c[2 * j + 1] = DDOT(n, x, 1, p->Vm + j*n, 1); //c_ij = x* A^j *x
 
 	}
 

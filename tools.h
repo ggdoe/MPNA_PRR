@@ -8,6 +8,16 @@
 #include <lapacke.h>
 #include <math.h>
 
+#define DGEMV cblas_dgemv
+#define DGEMM cblas_dgemm
+#define DSCAL cblas_dscal
+#define DASUM cblas_dasum
+#define DDOT cblas_ddot
+#define DAXPY cblas_daxpy
+#define DGETRF LAPACK_dgetrf
+#define DGETRI LAPACK_dgetri
+#define DGEEV LAPACK_dgeev
+
 #define epsilon 1.e-3
 #define print_separator(a) printf("--------- %s --------\n", a)
 
