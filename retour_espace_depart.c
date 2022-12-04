@@ -10,7 +10,8 @@ void retour_espace_depart(int n, int m, const double *restrict Vm, struct spectr
 	double *u = spectre->vec_p;
 	double* q = _tmp_lwork;
 	
-	// magie noire pour avoir les vecteurs de ritz selon les lignes de q
+	// nécessité d'exécuter la fonction en colmajor pour avoir les vecteurs de ritz
+	// selon les lignes de q alors que nous sommes en rowmajor
 	DGEMM(CblasColMajor, CblasNoTrans, CblasNoTrans,
 		n, m, m, 1, Vm, n, u, m, 0, q, n); //qi = Vm * ui
 	// Vm : les vecteurs sont selon les lignes (n element par vecteur)

@@ -25,7 +25,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 
 	init_prr(n,m, &p, &spectre);
 
-	// vérification A symétrique, sinon l'algo ne s'applique pas
+	// vérification que la matrice A est symétrique, sinon l'algo ne s'applique pas
 	// #pragma omp parallel for
 	for(int i = 0; i < n; i++)
 		for(int j = i+1; j < n; j++)
@@ -35,12 +35,13 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 			}
 
 	normalize(x,n);
-	// boucle iteration prr
+
+	// boucle des itérations de l'algorithme PRR
 	do
 	{
 		// algorithme PRR:
 		projection(&p, A, n, m, x); // O(m * n²)
-		resolution_sev(&spectre, &p,m); // O(m^3)
+		resolution_sev(&spectre, &p,m); // O(m³)
 		retour_espace_depart(n, m, p.Vm, &spectre); // O(n * m²)
 		residu = calcul_residu(n, m, A, &spectre); // O(m * n²)
 
@@ -75,7 +76,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	p->Vm = malloc(LWORK*sizeof(double));
 
 	spectre->vp = malloc(m * sizeof(double));
-	spectre->vec_p = malloc(LWORK * sizeof(double)); // pour une raison inconue ça crash (m=3) si je met n*m
+	spectre->vec_p = malloc(LWORK * sizeof(double)); // pour une raison inconue le programme crash (m=3) si l'on met n*m
 }
 
 static void free_prr(struct projection *p)

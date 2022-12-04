@@ -8,7 +8,7 @@ extern void *_tmp_m; // ipiv ou vp_i
 
 void resolution_sev(struct spectre *restrict spectre, struct projection *restrict B, int m)
 {
-	// var pour LAPACK
+	// variable pour LAPACK
 	int info;
 
 	// alias variables
@@ -18,17 +18,17 @@ void resolution_sev(struct spectre *restrict spectre, struct projection *restric
 	double *const vecp = spectre->vec_p;
 	int    *const ipiv = (int*)_tmp_m;
 
-	// i) inversion matrice Bm1 
+	// 1) inversion de la matrice Bm1
 	DGETRF(&m, &m, B->B1, &m, ipiv, &info);
 	DGETRI(&m, B->B1, &m, ipiv, _tmp_lwork, &LWORK, &info);
 	
 	// 2) F = inv(Bm1) * Bm
 	DGEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, m, m, 1, B->B1, m, B->B2, m, 0, F, m);
 
-	// 3) calcule du spectre de F
+	// 3) calcul du spectre de F
 
-	// on veut les vecteur propre à gauche pour éviter 
-	// de transposer A car fortran est en colmajor
+	// on souhaite les vecteurs propres à gauche pour éviter
+	// de transposer A puisque fortran est en colmajor
 	DGEEV("V", "N", &m, F, &m, vp_r, vp_i, vecp,
 				&m, NULL, &m, _tmp_lwork, &LWORK, &info);
 	// vecp : vecteur propre selon les lignes
