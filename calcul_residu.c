@@ -21,7 +21,7 @@ double* calcul_residu(int n, int m, const double *restrict A, struct spectre *re
 		memcpy(lambda_q + i*n, q+i*n, n*sizeof(double)); //copier q_i dans lambda_q
 		
 		//A_q = A * q_i - lambda_i * q_i 
-		// on decale lambda_q pour eviter les conflits des threads (et on a la place)
+		// on décale lambda_q pour éviter les conflits des threads (et on a la place)
 		DGEMV(CblasRowMajor, CblasNoTrans, n, n, 1, A, n, (q + i*n), 1, -lambda[i], lambda_q + i*n, 1); 
 		
 		residu[i] = DDOT(m, lambda_q + i*n, 1, lambda_q + i*n, 1);
@@ -29,10 +29,10 @@ double* calcul_residu(int n, int m, const double *restrict A, struct spectre *re
 	return residu;
 }
 
-// choisie le nouveau x : combinaison linéaire en fonction des residus calculé
+// choix du nouveau vecteur x : combinaison linéaire en fonction des résidus calculés
 void get_new_x(int n, int m, double *restrict x, double *restrict residu, double *restrict vec_p)
 {
-		// plus un residu est faible, plus on favorise son vecteurs de ritz associé
+		// plus un résidu est faible, plus on favorise son vecteur de ritz associé
 	// #pragma omp parallel for
 	for (int i = 0; i < m; i++)
 		residu[i] = 1 / residu[i];
@@ -42,14 +42,12 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 	// normalize(residu,m);
 
 
-		// 3 méthode de choix : max, pondéré, random
+		// 3 méthodes de choix : max, pondéré, random
 	// memcpy(x, vec_p + n * cblas_idamax(m, residu, 1), n * sizeof(double));
 	memset(x,0,n*sizeof(double));
 	for (int i = 0; i < m; i++) // non parallélisable, daxpy n'est pas atomic
 		// DAXPY(n, residu[i], vec_p + i * n, 1, x, 1);
 		DAXPY(n, drand48(), vec_p + i * n, 1, x, 1);
-
-	// étrange : l'erreur augmente avec les restarts, puis elle chute fortement (750900 --> 4.08909e-13)
 
 	normalize(x,n);
 }
