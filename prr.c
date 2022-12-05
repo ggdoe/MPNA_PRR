@@ -46,7 +46,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 		residu = calcul_residu(n, m, A, &spectre); // O(m * n²)
 
 		maxres = max(residu,m);
-		// printf("max : %lg\n", max(residu,m));
+		printf("max : %le\n", max(residu,m));
 
 		// nouveau vecteur initial :
 		get_new_x(n,m,x,residu,spectre.vec_p); // O(m * n)

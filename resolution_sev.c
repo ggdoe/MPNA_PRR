@@ -33,9 +33,14 @@ void resolution_sev(struct spectre *restrict spectre, struct projection *restric
 				&m, NULL, &m, _tmp_lwork, &LWORK, &info);
 	// vecp : vecteur propre selon les lignes
 
+	// for(int i = 0; i < m; i++)
+	// 	vp_r[i] = sqrt(vp_r[i]*vp_r[i] + vp_i[i]*vp_i[i]);
+
+
 	static int _printed = 0;
+	if(!_printed)
 	for(int i = 0; i < m; i++)
-		if(!_printed && vp_i[i] > epsilon){
+		if(vp_i[i] > 1){ // >1 pour rester large
 			printf("resolution_sev.c : valeur propre non reelle.\n");
 			_printed = 1;
 			break;
