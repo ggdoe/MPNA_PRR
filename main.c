@@ -1,21 +1,13 @@
 #include "tools.h"
 #include <time.h>
-#include <mpi.h>
 
 int main(int argc, char **argv)
 {
-	
-	int nb_mpi;
-	MPI_Init(&argc, &argv);
-	MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
-	printf("Nombre de processus = %d\n", nb_mpi);
-	MPI_Finalize();
-	exit(0);
 	int n;
-	int m = 5;
+	int m = 8;
 	struct prr_info prrinfo;
 
-	srand48(time(NULL));
+	// srand48(time(NULL));
 	// srand48(130);
 
 	double *A = read_matrice("../mat4.txt", &n, &n);
@@ -26,6 +18,9 @@ int main(int argc, char **argv)
 	{
 		// srand48(0);
 		x = rand_initial_vector(n);
+		multi_prr(&argc, &argv, n, m, A, x, &prrinfo, 0, 1e-2);
+		exit(0);
+
 		spectre = prr(n, m, A, x, &prrinfo, 0, 1e-2);
 	}
 

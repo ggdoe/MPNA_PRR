@@ -38,6 +38,7 @@ struct prr_info{
 };
 
 struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
+struct spectre multi_prr(int *argc, char*** argv, int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
 
 // etape algorithme 
 void projection(struct projection *p, double *restrict A, int n, int m, double*restrict  x);
