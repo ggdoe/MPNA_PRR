@@ -77,8 +77,8 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 	// for (int i = 0; i < m; i++) // non parallélisable, daxpy n'est pas atomic
 	// 	// if(residu[i] < DASUM(m, residu, 1) / m)
 	// 	if(inv_residu[i] > DASUM(m, inv_residu, 1) / m)
-	// 		// DAXPY(n, inv_residu[i], vec_p + i * n, 1, x, 1);
-			// DAXPY(n, drand48() + 0.1, vec_p + i * n, 1, x, 1);
+			// DAXPY(n, inv_residu[i], vec_p + i * n, 1, x, 1);
+			// DAXPY(n, 2*drand48() - 1., vec_p + i * n, 1, x, 1);
 
 	// normalize(x,n);
 }

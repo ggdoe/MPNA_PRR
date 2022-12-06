@@ -1,10 +1,18 @@
 #include "tools.h"
 #include <time.h>
+#include <mpi.h>
 
-int main()
+int main(int argc, char **argv)
 {
+	
+	int nb_mpi;
+	MPI_Init(&argc, &argv);
+	MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
+	printf("Nombre de processus = %d\n", nb_mpi);
+	MPI_Finalize();
+	exit(0);
 	int n;
-	int m = 6;
+	int m = 5;
 	struct prr_info prrinfo;
 
 	srand48(time(NULL));
