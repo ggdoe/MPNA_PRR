@@ -7,6 +7,8 @@
 #include <cblas.h>
 #include <lapacke.h>
 #include <math.h>
+#include <mpi.h>
+#include <time.h>
 
 #define DGEMV cblas_dgemv
 #define DGEMM cblas_dgemm
@@ -35,10 +37,11 @@ struct spectre{
 struct prr_info{
 	double max_residu;
 	int nb_it;
+	int got_result; // est ce que ce process MPI possède le résultat
 };
 
 struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
-struct spectre multi_prr(int *argc, char*** argv, int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
+struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm);
 
 // etape algorithme 
 void projection(struct projection *p, double *restrict A, int n, int m, double*restrict  x);

@@ -1,5 +1,4 @@
 #include "tools.h"
-#include <mpi.h>
 
 int LWORK;
 double *_tmp_mm; // size m*m
@@ -41,40 +40,60 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	}while(maxres > _epsilon);
 
 	free_prr(&p);
-	if(prrinfo != NULL){
-		prrinfo->max_residu = maxres;
-		prrinfo->nb_it = count;
-	}
+	prrinfo->max_residu = maxres;
+	prrinfo->nb_it = count;
+	prrinfo->got_result = 1; // TODO (eventuellement) à virer à l'aide de define
 	
 	return spectre;
 }
 
-struct spectre multi_prr(int *argc, char*** argv, int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon)
+struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm)
 {
+	struct projection p;
 	struct spectre spectre;
-	int nb_mpi, rank_mpi;
-	MPI_Init(argc, argv);
-	MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
-	srand48(rank_mpi);
+	double *residu;
+	double maxres;
+	double minmaxres; // min des résidus max des process MPI
+	int count = 0;
 
-	printf("Nombre de processus = %d\n", nb_mpi);
-	spectre = prr(n, m, A, x, prrinfo, max_it, _epsilon);
+	init_prr(n,m, &p, &spectre, A, &max_it);
 
-	///// TODO
-	//// recopier prr + comm mpi
-	/////
+	normalize(x,n);
+
+	// boucle des itérations de l'algorithme PRR
+	for(;;){
+		// algorithme PRR:
+		projection(&p, A, n, m, x); // O(m * n²)
+		resolution_sev(&spectre, &p,m); // O(m³)
+		retour_espace_depart(n, m, p.Vm, &spectre); // O(n * m²)
+		residu = calcul_residu(n, m, A, &spectre); // O(m * n²)
+
+		maxres = max(residu,m);
+		// printf("max : %le\n", max(residu,m));
+
+		// nouveau vecteur initial :
+		get_new_x(n,m,x,residu,spectre.vec_p); // O(m * n)
+		///
+
+		// On évite de lancer les comm mpi à chaque itération
+		count++;
+		if (maxres < _epsilon || count >= max_it){
+			MPI_Allreduce(&maxres, &minmaxres, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+			break;
+		}
+		else if(count % interval_comm == 0){
+			MPI_Allreduce(&maxres, &minmaxres, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+			if(minmaxres < _epsilon)
+				break;
+		}
+	}
+
+	free_prr(&p);
+	prrinfo->max_residu = maxres;
+	prrinfo->nb_it = count;
+	prrinfo->got_result = (minmaxres == maxres);
 	
-	print_separator("vp");
-	print_matrice(spectre.vp, 1, m);
-
-	print_separator("vecteur ritz");
-	print_matrice(spectre.vec_p, m, n);
-
-	printf("count : %d\n", prrinfo->nb_it);
-	printf("max residu : %lg\n", prrinfo->max_residu);
-
-	MPI_Finalize();
+	return spectre;
 }
 
 /////////
