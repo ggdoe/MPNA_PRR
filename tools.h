@@ -6,6 +6,7 @@
 #include <string.h>
 #include <cblas.h>
 #include <lapacke.h>
+#include <omp.h>
 #include <math.h>
 #include <mpi.h>
 #include <time.h>
@@ -37,6 +38,7 @@ struct spectre{
 struct prr_info{
 	double max_residu;
 	int nb_it;
+	double tps_exec;
 	int got_result; // est ce que ce process MPI possède le résultat
 };
 

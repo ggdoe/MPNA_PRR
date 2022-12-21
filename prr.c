@@ -13,13 +13,14 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	struct projection p;
 	struct spectre spectre;
 	double *residu;
-	double maxres;
+	double maxres, time_start, time_end;
 	int count = 0;
 
 	init_prr(n,m, &p, &spectre, A, &max_it);
 
 	normalize(x,n);
 
+	time_start = omp_get_wtime();
 	// boucle des itérations de l'algorithme PRR
 	do
 	{
@@ -38,10 +39,12 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 		if(++count >= max_it)
 			break;
 	}while(maxres > _epsilon);
+	time_end = omp_get_wtime();
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;
 	prrinfo->nb_it = count;
+	prrinfo->tps_exec = time_end - time_start;
 	prrinfo->got_result = 1; // TODO (eventuellement) à virer à l'aide de define
 	
 	return spectre;
@@ -52,7 +55,7 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 	struct projection p;
 	struct spectre spectre;
 	double *residu;
-	double maxres;
+	double maxres, time_start, time_end;
 	double minmaxres; // min des résidus max des process MPI
 	int count = 0;
 
@@ -60,6 +63,7 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 
 	normalize(x,n);
 
+	time_start = omp_get_wtime();
 	// boucle des itérations de l'algorithme PRR
 	for(;;){
 		// algorithme PRR:
@@ -87,10 +91,12 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 				break;
 		}
 	}
+	time_end = omp_get_wtime();
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;
 	prrinfo->nb_it = count;
+	prrinfo->tps_exec = time_end - time_start;
 	prrinfo->got_result = (minmaxres == maxres);
 	
 	return spectre;
@@ -119,7 +125,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	if(*max_it <= 0)
 		*max_it = __INT32_MAX__;
 	// vérification que la matrice A est symétrique, sinon l'algo ne s'applique pas
-	// #pragma omp parallel for
+	#pragma omp parallel for
 	for(int i = 0; i < n; i++)
 		for(int j = i+1; j < n; j++)
 			if(A[i * n + j] != A[j * n + i]){

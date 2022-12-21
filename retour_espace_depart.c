@@ -19,7 +19,7 @@ void retour_espace_depart(int n, int m, const double *restrict Vm, struct spectr
 	// q : les vecteurs de ritz sont selon les lignes (n element par vecteur)
 
 	// optionnel : normalisation des vecteurs de ritz
-	// #pragma omp parallel for
+	#pragma omp parallel for
 	for(int i = 0; i < m; i++)
 		normalize(q + i*n, n);
 
