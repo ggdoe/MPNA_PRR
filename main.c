@@ -22,8 +22,8 @@ int main(int argc, char **argv)
 	MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
 
-	srand48(rank_mpi);
-	// srand48(rank_mpi + time(NULL));
+	// srand48(rank_mpi); //pseudo-aléatoire
+	srand48(rank_mpi + time(NULL)); //aléatoire
 	
 	double *A = read_matrice(argv[1], &n, &n);
 	double *x = NULL;
