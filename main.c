@@ -2,59 +2,65 @@
 
 int main(int argc, char **argv)
 {
-	if(argc != 4)
-	{
-		printf("Utilisation : ./prog <fichier> <seq|par> <nb_threads>\n");
-		printf("prog : nom de l'exécutable, ici \"prr\"\n");
-		printf("<fichier> : fichier à lire contenant la matrice à étudier\n");
-		printf("<seq|par> : exécution sequentielle ou parallèle\n");
-		printf("<nb_threads> : nombre de threads à avoir lors d'une exécution en parallèle. Inutile lors d'une exécution en séquentielle et sera remplacé par 1.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	int n;
-	int m = 6;
+	srand48(time(NULL));
+	int n, m = 6;
+	double* A = NULL, *x = NULL;
 	struct prr_info prrinfo;
-
-	// init MPI
-	int nb_mpi, rank_mpi;
-	MPI_Init(&argc, &argv);
-	MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
-
-	// srand48(rank_mpi); //pseudo-aléatoire
-	srand48(rank_mpi + time(NULL)); //aléatoire
-	
-	double *A = read_matrice(argv[1], &n, &n);
-	double *x = NULL;
-	// double x[] = {1., 3., 7.};
 	struct spectre spectre;
 
-	if(!strcmp(argv[2], "par"))
-	{
-		omp_set_num_threads(atoi(argv[3]));
+	#ifdef MULTIPRR
+		if(argc != 3)
+		{
+			printf("Utilisation : ./prr_mpi <matrice> <nb_threads>\n");
+			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
+			printf("<nb_threads> : nombre de threads à avoir lors d'une exécution en parallèle.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		char* p_argv = NULL;
+		int nb_threads = (int) strtol(argv[2], &p_argv, 10);
+
+		if(*p_argv != '\0' || nb_threads <= 0)
+		{
+			printf("Erreur : nombre de threads non reconnu. Veuillez indiquer une valeur entière supérieure à 1.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		// init MPI
+		int nb_mpi, rank_mpi;
+		MPI_Init(&argc, &argv);
+		MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
+		MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
+
+		A = read_matrice(argv[1], &n, &n);
+		omp_set_num_threads(nb_threads);
+
 		//for (size_t i = 0; i < 1000; i++)
 		//{
 			x = rand_initial_vector(n);
 			spectre = multi_prr(n, m, A, x, &prrinfo, 0, 1e-2, 1000);
 		//}
-	}
 
-	else if(!strcmp(argv[2], "seq"))
-	{
+		MPI_Finalize();
+
+	#else
+		if(argc != 2)
+		{
+			printf("Utilisation : ./prr <matrice>\n");
+			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
+			exit(EXIT_FAILURE);
+		}
+
+		A = read_matrice(argv[1], &n, &n);
 		omp_set_num_threads(1);
+
 		//for (size_t i = 0; i < 1000; i++)
 		//{
 			x = rand_initial_vector(n);
 			spectre = prr(n, m, A, x, &prrinfo, 0, 1e-2);
 		//}
-	}
 
-	else
-	{
-		printf("Erreur : argument 1 non reconnu, veuillez choisir entre \"seq\" et \"par\"\n");
-		exit(EXIT_FAILURE);
-	}
+	#endif
 
 	if(prrinfo.got_result){
 		print_separator("vp");
@@ -73,7 +79,6 @@ int main(int argc, char **argv)
 	free(spectre.vp);
 	free(x);
 
-	MPI_Finalize();
 	return 0;
 }
 
