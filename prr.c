@@ -50,6 +50,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	return spectre;
 }
 
+#ifdef MULTIPRR
 struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm)
 {
 	struct projection p;
@@ -101,6 +102,7 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 	
 	return spectre;
 }
+#endif
 
 /////////
 

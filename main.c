@@ -3,66 +3,90 @@
 int main(int argc, char **argv)
 {
 	srand48(time(NULL));
-	int n, m = 6;
+	int n, m = 6, nb_reps = 1;
 	double* A = NULL, *x = NULL;
+	double epsilon = 1e-2;
 	struct prr_info prrinfo;
 	struct spectre spectre;
 
 	#ifdef MULTIPRR
-		if(argc != 3)
+		if(argc != 5)
 		{
-			printf("Utilisation : ./prr_mpi <matrice> <nb_threads>\n");
+			printf("Utilisation : ./prr_mpi <matrice> <epsilon> <nb_reps> <freq_msg_mpi>\n");
 			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
-			printf("<nb_threads> : nombre de threads à avoir lors d'une exécution en parallèle.\n");
+			printf("<epsilon> : précision des résidus\n");
+			printf("<nb_reps> : nombre de fois que l'algorithme sera exécuté \n");
+			printf("<freq_msg_mpi> : entier représentant l'itération où les processus mpi communiquent\n");
 			exit(EXIT_FAILURE);
 		}
+		A = read_matrice(argv[1], &n, &n);
+		epsilon = atof(argv[2]);
+		nb_reps = atoi(argv[3]);
+		int freq_msg_mpi = atoi(argv[4]);
 
-		char* p_argv = NULL;
-		int nb_threads = (int) strtol(argv[2], &p_argv, 10);
-
-		if(*p_argv != '\0' || nb_threads <= 0)
+		if(epsilon <= 0)
 		{
-			printf("Erreur : nombre de threads non reconnu. Veuillez indiquer une valeur entière supérieure à 1.\n");
+			printf("Erreur : epsilon <= 0\n");
+			exit(EXIT_FAILURE);
+		}
+		if(nb_reps <= 0)
+		{
+			printf("Erreur : nb_reps <= 0\n");
+			exit(EXIT_FAILURE);
+		}
+		if(freq_msg_mpi <= 0)
+		{
+			printf("Erreur : freq_msg_mpi <= 0\n");
 			exit(EXIT_FAILURE);
 		}
 
-		// init MPI
 		int nb_mpi, rank_mpi;
 		MPI_Init(&argc, &argv);
 		MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
 
-		A = read_matrice(argv[1], &n, &n);
-		omp_set_num_threads(nb_threads);
-
-		//for (size_t i = 0; i < 1000; i++)
-		//{
+		for (size_t i = 0; i < nb_reps; i++)
+		{
 			x = rand_initial_vector(n);
-			spectre = multi_prr(n, m, A, x, &prrinfo, 0, 1e-2, 1000);
-		//}
+			spectre = multi_prr(n, m, A, x, &prrinfo, 0, epsilon, freq_msg_mpi);
+		}
 
 		MPI_Finalize();
 
 	#else
-		if(argc != 2)
+		if(argc != 4)
 		{
-			printf("Utilisation : ./prr <matrice>\n");
+			printf("Utilisation : ./prr <matrice> <epsilon> <nb_reps>\n");
 			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
+			printf("<epsilon> : précision des résidus\n");
+			printf("<nb_reps> : nombre de fois que l'algorithme sera exécuté \n");
+			exit(EXIT_FAILURE);
+		}
+		A = read_matrice(argv[1], &n, &n);
+		epsilon = atof(argv[2]);
+		nb_reps = atoi(argv[3]);
+
+		if(epsilon <= 0)
+		{
+			printf("Erreur : epsilon <= 0\n");
+			exit(EXIT_FAILURE);
+		}
+		if(nb_reps <= 0)
+		{
+			printf("Erreur : nb_reps <= 0\n");
 			exit(EXIT_FAILURE);
 		}
 
-		A = read_matrice(argv[1], &n, &n);
-		omp_set_num_threads(1);
-
-		//for (size_t i = 0; i < 1000; i++)
-		//{
+		for (size_t i = 0; i < nb_reps; i++)
+		{
 			x = rand_initial_vector(n);
-			spectre = prr(n, m, A, x, &prrinfo, 0, 1e-2);
-		//}
+			spectre = prr(n, m, A, x, &prrinfo, 0, epsilon);
+		}
 
 	#endif
 
 	if(prrinfo.got_result){
+		printf("Résultats de la dernière itération :\n");
 		print_separator("vp");
 		print_matrice(spectre.vp, 1, m);
 

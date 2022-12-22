@@ -8,7 +8,6 @@
 #include <lapacke.h>
 #include <omp.h>
 #include <math.h>
-#include <mpi.h>
 #include <time.h>
 
 #define DGEMV cblas_dgemv
@@ -21,7 +20,6 @@
 #define DGETRI LAPACK_dgetri
 #define DGEEV LAPACK_dgeev
 
-#define epsilon 1.e-3
 #define print_separator(a) printf("--------- %s --------\n", a)
 
 struct projection {
@@ -43,7 +41,10 @@ struct prr_info{
 };
 
 struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
+#ifdef MULTIPRR
+#include <mpi.h>
 struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm);
+#endif
 
 // etape algorithme 
 void projection(struct projection *p, double *restrict A, int n, int m, double*restrict  x);
