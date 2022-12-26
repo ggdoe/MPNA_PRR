@@ -7,4 +7,5 @@
 #SBATCH --partition=cpu_short
 
 # execution
-./prr mat30x30.txt seq 1
+./prr_gcc mat30x30.txt seq 1
+./prr_icc mat30x30.txt seq 1
