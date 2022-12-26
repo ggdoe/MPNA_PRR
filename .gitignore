@@ -1,5 +1,7 @@
 a.out
-prr
+prr_*
+multiprr_*
+
 
 .vscode/
 build/

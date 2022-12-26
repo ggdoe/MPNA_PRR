@@ -13,7 +13,7 @@ void print_matrice(double *A, int n, int m)
 
 double *rand_initial_vector(int n)
 {
-	double *x = malloc(n * sizeof(double));
+	double *x = MALLOC(n * sizeof(double));
 	for(int i = 0; i < n; i++)
 		x[i] = 2 * drand48() - 1.;
 	return x;
@@ -36,7 +36,7 @@ double * read_matrice(char *filename, int *n, int *m)
 	fscanf(fd, "%d", &N);
 	fscanf(fd, "%d", &M);
 
-	double *A = malloc(N * M * sizeof(double));
+	double *A = MALLOC(N * M * sizeof(double));
 
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < M; j++)

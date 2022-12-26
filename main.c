@@ -1,89 +1,52 @@
 #include "tools.h"
 
+static long get_nanosec();
+static void init_program(int argc, char **argv, double *epsilon, int *freq_msg_mpi, int *nb_reps);
+
 int main(int argc, char **argv)
 {
-	srand48(time(NULL));
-	int n, m = 6, nb_reps = 1;
-	double* A = NULL, *x = NULL;
+	int n, m, nb_reps;
+	int freq_msg_mpi;
+	int max_it;
+	double *A = NULL, *x = NULL;
 	double epsilon = 1e-2;
 	struct prr_info prrinfo;
 	struct spectre spectre;
 
+	m = 5;
+	nb_reps = 1;
+	epsilon = 1e-2;
+	freq_msg_mpi = 100;
+	nb_reps = 1;
+	max_it = 0;
+
+	// init_program(argc, argv, &epsilon, &freq_msg_mpi, &nb_reps);
+
+	A = read_matrice("mat20x20.txt", &n, &n);
+	// A = read_matrice(argv[1], &n, &n); // verif si argv[1] est un fichier existant
+
 	#ifdef MULTIPRR
-		if(argc != 5)
-		{
-			printf("Utilisation : ./prr_mpi <matrice> <epsilon> <nb_reps> <freq_msg_mpi>\n");
-			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
-			printf("<epsilon> : précision des résidus\n");
-			printf("<nb_reps> : nombre de fois que l'algorithme sera exécuté \n");
-			printf("<freq_msg_mpi> : entier représentant l'itération où les processus mpi communiquent\n");
-			exit(EXIT_FAILURE);
-		}
-		A = read_matrice(argv[1], &n, &n);
-		epsilon = atof(argv[2]);
-		nb_reps = atoi(argv[3]);
-		int freq_msg_mpi = atoi(argv[4]);
-
-		if(epsilon <= 0)
-		{
-			printf("Erreur : epsilon <= 0\n");
-			exit(EXIT_FAILURE);
-		}
-		if(nb_reps <= 0)
-		{
-			printf("Erreur : nb_reps <= 0\n");
-			exit(EXIT_FAILURE);
-		}
-		if(freq_msg_mpi <= 0)
-		{
-			printf("Erreur : freq_msg_mpi <= 0\n");
-			exit(EXIT_FAILURE);
-		}
-
-		int nb_mpi, rank_mpi;
+		int rank_mpi;
 		MPI_Init(&argc, &argv);
-		MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
 
-		for (size_t i = 0; i < nb_reps; i++)
-		{
-			x = rand_initial_vector(n);
-			spectre = multi_prr(n, m, A, x, &prrinfo, 0, epsilon, freq_msg_mpi);
-		}
-
-		MPI_Finalize();
-
+		long seed = get_nanosec() - rank_mpi * (get_nanosec() % 51594);
+		srand48(seed);
+		// printf("seed : %ld\n", seed);
 	#else
-		if(argc != 4)
-		{
-			printf("Utilisation : ./prr <matrice> <epsilon> <nb_reps>\n");
-			printf("<matrice> : fichier à lire contenant la matrice à étudier\n");
-			printf("<epsilon> : précision des résidus\n");
-			printf("<nb_reps> : nombre de fois que l'algorithme sera exécuté \n");
-			exit(EXIT_FAILURE);
-		}
-		A = read_matrice(argv[1], &n, &n);
-		epsilon = atof(argv[2]);
-		nb_reps = atoi(argv[3]);
-
-		if(epsilon <= 0)
-		{
-			printf("Erreur : epsilon <= 0\n");
-			exit(EXIT_FAILURE);
-		}
-		if(nb_reps <= 0)
-		{
-			printf("Erreur : nb_reps <= 0\n");
-			exit(EXIT_FAILURE);
-		}
-
-		for (size_t i = 0; i < nb_reps; i++)
-		{
-			x = rand_initial_vector(n);
-			spectre = prr(n, m, A, x, &prrinfo, 0, epsilon);
-		}
-
+		srand48(get_nanosec());
 	#endif
+
+	for (size_t i = 0; i < nb_reps; i++)
+	{
+		x = rand_initial_vector(n);
+
+		#ifdef MULTIPRR
+			spectre = multi_prr(n, m, A, x, &prrinfo, max_it, epsilon, freq_msg_mpi);
+		#else
+			spectre = prr(n, m, A, x, &prrinfo, max_it, epsilon);
+		#endif
+	}
 
 	if(prrinfo.got_result){
 		printf("Résultats de la dernière itération :\n");
@@ -93,16 +56,49 @@ int main(int argc, char **argv)
 		print_separator("vecteur ritz");
 		print_matrice(spectre.vec_p, m, n);
 
+	#ifdef MULTIPRR
+		printf("rank : %d\n", rank_mpi);
+	#endif
 		printf("count : %d\n", prrinfo.nb_it);
-		printf("tps exec : %lf\n", prrinfo.tps_exec);
+		printf("tps exec : %lf µs\n", prrinfo.tps_exec);
 		printf("max residu : %lg\n", prrinfo.max_residu);
 	}
 
-	free(A);
-	free(spectre.vec_p);
-	free(spectre.vp);
-	free(x);
+	FREE(A);
+	FREE(spectre.vec_p);
+	FREE(spectre.vp);
+	FREE(x);
+
+	#ifdef MULTIPRR
+		MPI_Finalize();
+	#endif
 
 	return 0;
 }
 
+static long get_nanosec()
+{
+	struct timespec time;
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time);
+	return time.tv_nsec;
+}
+
+static void init_program(int argc, char **argv, double *epsilon, int *freq_msg_mpi, int *nb_reps)
+{
+	*epsilon = atof(argv[2]);
+	*nb_reps = atoi(argv[3]);
+	*freq_msg_mpi = atoi(argv[4]);
+	
+	if(argc != 5){
+		printf("Utilisation : ./prr_mpi <matrice> <epsilon> <nb_reps> <freq_msg_mpi>\n"\
+				"<matrice> : fichier à lire contenant la matrice à étudier\n"\
+				"<epsilon> : précision des résidus\n"\
+				"<nb_reps> : nombre de fois que l'algorithme sera exécuté \n"\
+				"<freq_msg_mpi> : entier représentant l'itération où les processus mpi communiquent\n");
+		exit(EXIT_FAILURE);
+	}
+	if(*epsilon <= 0 || *freq_msg_mpi <= 0 || *nb_reps <= 0){
+		printf("Erreur : paramètre(s) négatif\n");
+		exit(EXIT_FAILURE);
+	}
+}

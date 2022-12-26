@@ -8,19 +8,22 @@ void *_tmp_m; // ipiv ou vp_i   (size m)
 static void init_prr(int n, int m, struct projection *p, struct spectre *spectre, double *A, int *max_it);
 static void free_prr(struct projection *p);
 
+#ifndef MULTIPRR
 struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon)
 {
 	struct projection p;
 	struct spectre spectre;
 	double *residu;
-	double maxres, time_start, time_end;
+	double maxres;
 	int count = 0;
+	struct timespec time_start, time_end;
 
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
 	init_prr(n,m, &p, &spectre, A, &max_it);
 
 	normalize(x,n);
 
-	time_start = omp_get_wtime();
+
 	// boucle des itérations de l'algorithme PRR
 	do
 	{
@@ -39,32 +42,35 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 		if(++count >= max_it)
 			break;
 	}while(maxres > _epsilon);
-	time_end = omp_get_wtime();
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time_end);
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;
 	prrinfo->nb_it = count;
-	prrinfo->tps_exec = time_end - time_start;
+	prrinfo->tps_exec = (double)(time_end.tv_sec - time_start.tv_sec) * 1e6 + (double)(time_end.tv_nsec - time_start.tv_nsec) * 1e-3;
 	prrinfo->got_result = 1; // TODO (eventuellement) à virer à l'aide de define
 	
 	return spectre;
 }
 
-#ifdef MULTIPRR
+#else
+
 struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm)
 {
 	struct projection p;
 	struct spectre spectre;
 	double *residu;
-	double maxres, time_start, time_end;
+	double maxres;
 	double minmaxres; // min des résidus max des process MPI
 	int count = 0;
+	struct timespec time_start, time_end;
+
 
 	init_prr(n,m, &p, &spectre, A, &max_it);
 
 	normalize(x,n);
 
-	time_start = omp_get_wtime();
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
 	// boucle des itérations de l'algorithme PRR
 	for(;;){
 		// algorithme PRR:
@@ -92,12 +98,12 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 				break;
 		}
 	}
-	time_end = omp_get_wtime();
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time_end);
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;
 	prrinfo->nb_it = count;
-	prrinfo->tps_exec = time_end - time_start;
+	prrinfo->tps_exec = (double)(time_end.tv_sec - time_start.tv_sec) * 1e6 + (double)(time_end.tv_nsec - time_start.tv_nsec) * 1e-3;
 	prrinfo->got_result = (minmaxres == maxres);
 	
 	return spectre;
@@ -109,16 +115,16 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 static void init_prr(int n, int m, struct projection *restrict p, struct spectre *restrict spectre, double *A, int *max_it)
 {
 	LWORK = n * (m < 4 ? 4 : m); // 4*n   ou   n*m
-	_tmp_mm = malloc(m*m * sizeof(double));
-	_tmp_lwork = malloc(LWORK * sizeof(double));
-	_tmp_m = malloc(m * sizeof(double));
+	_tmp_mm = MALLOC(m*m * sizeof(double));
+	_tmp_lwork = MALLOC(LWORK * sizeof(double));
+	_tmp_m = MALLOC(m * sizeof(double));
 	
-	p->B1 = malloc(m*m*sizeof(double));
-	p->B2 = malloc(m*m*sizeof(double));
-	p->Vm = malloc(LWORK*sizeof(double));
+	p->B1 = MALLOC(m*m*sizeof(double));
+	p->B2 = MALLOC(m*m*sizeof(double));
+	p->Vm = MALLOC(LWORK*sizeof(double));
 
-	spectre->vp = malloc(m * sizeof(double));
-	spectre->vec_p = malloc(LWORK * sizeof(double)); // pour une raison inconue le programme crash (m=3) si l'on met n*m
+	spectre->vp = MALLOC(m * sizeof(double));
+	spectre->vec_p = MALLOC(LWORK * sizeof(double)); // pour une raison inconue le programme crash (m=3) si l'on met n*m
 	
 	if(m > n){
 		printf("'m' doit etre plus petit ou egal a 'n'.\n");
@@ -127,7 +133,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	if(*max_it <= 0)
 		*max_it = __INT32_MAX__;
 	// vérification que la matrice A est symétrique, sinon l'algo ne s'applique pas
-	#pragma omp parallel for
+	// #pragma omp parallel for
 	for(int i = 0; i < n; i++)
 		for(int j = i+1; j < n; j++)
 			if(A[i * n + j] != A[j * n + i]){
@@ -138,11 +144,11 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 
 static void free_prr(struct projection *p)
 {
-	free(_tmp_mm);
-	free(_tmp_lwork);
-	free(_tmp_m);
+	FREE(_tmp_mm);
+	FREE(_tmp_lwork);
+	FREE(_tmp_m);
 	
-	free(p->B1);
-	free(p->B2);
-	free(p->Vm);
+	FREE(p->B1);
+	FREE(p->B2);
+	FREE(p->Vm);
 }
