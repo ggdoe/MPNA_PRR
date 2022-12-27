@@ -1,9 +1,9 @@
 #include "tools.h"
 
 int LWORK;
-double *_tmp_mm; // size m*m
-double *_tmp_lwork; // size > n*m
-void *_tmp_m; // ipiv ou vp_i   (size m)
+double *_tmp_mm; // taille  m*m
+double *_tmp_lwork; // taille > n*m
+void *_tmp_m; // ipiv ou vp_i   (taille m)
 
 static void init_prr(int n, int m, struct projection *p, struct spectre *spectre, double *A, int *max_it);
 static void free_prr(struct projection *p);
@@ -48,7 +48,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	prrinfo->max_residu = maxres;
 	prrinfo->nb_it = count;
 	prrinfo->tps_exec = (double)(time_end.tv_sec - time_start.tv_sec) * 1e6 + (double)(time_end.tv_nsec - time_start.tv_nsec) * 1e-3;
-	prrinfo->got_result = 1; // TODO (eventuellement) à virer à l'aide de define
+	prrinfo->got_result = 1;
 	
 	return spectre;
 }
@@ -86,7 +86,7 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 		get_new_x(n,m,x,residu,spectre.vec_p); // O(m * n)
 		///
 
-		// On évite de lancer les comm mpi à chaque itération
+		// On évite de lancer les communications mpi à chaque itération
 		count++;
 		if (maxres < _epsilon || count >= max_it){
 			MPI_Allreduce(&maxres, &minmaxres, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
@@ -114,7 +114,7 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 
 static void init_prr(int n, int m, struct projection *restrict p, struct spectre *restrict spectre, double *A, int *max_it)
 {
-	LWORK = n * (m < 4 ? 4 : m); // 4*n   ou   n*m
+	LWORK = n * (m < 4 ? 4 : m); // 4*n ou n*m
 	_tmp_mm = MALLOC(m*m * sizeof(double));
 	_tmp_lwork = MALLOC(LWORK * sizeof(double));
 	_tmp_m = MALLOC(m * sizeof(double));
@@ -124,7 +124,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	p->Vm = MALLOC(LWORK*sizeof(double));
 
 	spectre->vp = MALLOC(m * sizeof(double));
-	spectre->vec_p = MALLOC(LWORK * sizeof(double)); // pour une raison inconue le programme crash (m=3) si l'on met n*m
+	spectre->vec_p = MALLOC(LWORK * sizeof(double));
 	
 	if(m > n){
 		printf("'m' doit etre plus petit ou egal a 'n'.\n");
@@ -132,7 +132,7 @@ static void init_prr(int n, int m, struct projection *restrict p, struct spectre
 	}
 	if(*max_it <= 0)
 		*max_it = __INT32_MAX__;
-	// vérification que la matrice A est symétrique, sinon l'algo ne s'applique pas
+	// vérification que la matrice A est symétrique, sinon l'algorithme ne s'applique pas
 	// #pragma omp parallel for
 	for(int i = 0; i < n; i++)
 		for(int j = i+1; j < n; j++)

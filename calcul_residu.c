@@ -1,6 +1,6 @@
 #include "tools.h"
 
-extern double *_tmp_lwork; // size > n*m
+extern double *_tmp_lwork; // taille > n*m
 extern double *_tmp_mm;
 extern void *_tmp_m; 
 
@@ -40,7 +40,7 @@ double* calcul_residu(int n, int m, const double *restrict A, struct spectre *re
 void get_new_x(int n, int m, double *restrict x, double *restrict residu, double *restrict vec_p)
 {
 
-		// plusieurs méthodes de choix : max, pondéré, random
+	// plusieurs méthodes de choix : max, pondéré, random
 	
 	for(int i = 0; i < n; i++)
 		x[i] = 2 * drand48() - 1.;

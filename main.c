@@ -17,13 +17,12 @@ int main(int argc, char **argv)
 	nb_reps = 1;
 	epsilon = 1e-2;
 	freq_msg_mpi = 100;
-	nb_reps = 1;
 	max_it = 0;
 
 	// init_program(argc, argv, &epsilon, &freq_msg_mpi, &nb_reps);
 
 	A = read_matrice("mat20x20.txt", &n, &n);
-	// A = read_matrice(argv[1], &n, &n); // verif si argv[1] est un fichier existant
+	// A = read_matrice(argv[1], &n, &n); // vérification si argv[1] est un fichier existant
 
 	#ifdef MULTIPRR
 		int rank_mpi;
@@ -98,7 +97,7 @@ static void init_program(int argc, char **argv, double *epsilon, int *freq_msg_m
 		exit(EXIT_FAILURE);
 	}
 	if(*epsilon <= 0 || *freq_msg_mpi <= 0 || *nb_reps <= 0){
-		printf("Erreur : paramètre(s) négatif\n");
+		printf("Erreur : paramètre(s) négatif(s)\n");
 		exit(EXIT_FAILURE);
 	}
 }
