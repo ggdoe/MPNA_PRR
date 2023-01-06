@@ -61,6 +61,8 @@ int main(int argc, char **argv)
 		printf("count : %d\n", prrinfo.nb_it);
 		printf("tps exec : %lf µs\n", prrinfo.tps_exec);
 		printf("max residu : %lg\n", prrinfo.max_residu);
+
+		write_files(prrinfo, n, m, epsilon, max_it, freq_msg_mpi);
 	}
 
 	FREE(A);
