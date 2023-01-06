@@ -50,6 +50,12 @@
 
 #define print_separator(a) printf("--------- %s --------\n", a)
 
+struct prgm_config{
+	char *filename;
+	int m, nb_rep, freq, max_it;
+	double epsilon;
+};
+
 struct projection {
 	double *B1;
 	double *B2;
@@ -68,8 +74,8 @@ struct prr_info{
 	int got_result; // est ce que ce process MPI possède le résultat
 };
 
-struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon);
-struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm);
+struct spectre prr(int n, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, struct prgm_config *restrict config);
+struct spectre multi_prr(int n, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, struct prgm_config *restrict config);
 
 // etape algorithme 
 void projection(struct projection *p, double *restrict A, int n, int m, double*restrict  x);
@@ -81,7 +87,7 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 // tools
 void normalize(double *x, int n);
 double max(double *x, int n);
-double *rand_initial_vector(int n);
+void rand_vector(int n, double *x);
 void print_matrice(double *A, int n, int m);
 double * read_matrice(char *filename, int *n, int *m);
 

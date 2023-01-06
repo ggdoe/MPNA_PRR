@@ -42,6 +42,7 @@ void get_new_x(int n, int m, double *restrict x, double *restrict residu, double
 
 	// plusieurs méthodes de choix : max, pondéré, random
 	
+	///// rand_vector(n, x);
 	for(int i = 0; i < n; i++)
 		x[i] = 2 * drand48() - 1.;
 

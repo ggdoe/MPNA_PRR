@@ -9,7 +9,7 @@ static void init_prr(int n, int m, struct projection *p, struct spectre *spectre
 static void free_prr(struct projection *p);
 
 #ifndef MULTIPRR
-struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon)
+struct spectre prr(int n, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, struct prgm_config *restrict config)
 {
 	struct projection p;
 	struct spectre spectre;
@@ -17,6 +17,10 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 	double maxres;
 	int count = 0;
 	struct timespec time_start, time_end;
+
+	int m = config->m;
+	int max_it = config->max_it;
+	double _epsilon = config->epsilon;
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
 	init_prr(n,m, &p, &spectre, A, &max_it);
@@ -55,7 +59,7 @@ struct spectre prr(int n, int m, double *restrict A, double *restrict x, struct 
 
 #else
 
-struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, int max_it, double _epsilon, int interval_comm)
+struct spectre multi_prr(int n, double *restrict A, double *restrict x, struct prr_info *restrict prrinfo, struct prgm_config *restrict config)
 {
 	struct projection p;
 	struct spectre spectre;
@@ -65,6 +69,10 @@ struct spectre multi_prr(int n, int m, double *restrict A, double *restrict x, s
 	int count = 0;
 	struct timespec time_start, time_end;
 
+	int m = config->m;
+	int max_it = config->max_it;
+	int interval_comm = config->freq;
+	double _epsilon = config->epsilon;
 
 	init_prr(n,m, &p, &spectre, A, &max_it);
 
