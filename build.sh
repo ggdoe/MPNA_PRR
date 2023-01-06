@@ -6,10 +6,9 @@
 
 FILES="main.c calcul_residu.c projection.c prr.c resolution_sev.c retour_espace_depart.c tools.c"
 
-# mpicc -g -flto -Wall main.c prr.c multi_prr.c calcul_residu.c projection.c resolution_sev.c retour_espace_depart.c tools.c -lblas -llapack -lm 
-
 icc -Wall -std=c11 -flto -O3 -mkl -DMKL $FILES -o prr_icc -no-multibyte-chars
 mpiicc -Wall -std=c11 -flto -O3 -mkl -DMKL -DMULTIPRR $FILES -o multiprr_icc -no-multibyte-chars
 
 gcc -flto -O3 -lm -lopenblas $FILES -o prr_gcc
 mpicc -flto -O3 -lm -lopenblas -DMULTIPRR $FILES -o multiprr_gcc
+

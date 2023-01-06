@@ -64,15 +64,23 @@ double max(double *x, int n)
 	return max;
 }
 
-void write_files(struct prr_info prrinfo, int n, int m, double epsilon, int max_it, int freq_msg_mpi)
+FILE* __result;
+
+void log_result(struct prr_info prrinfo)
 {
-	FILE* result = fopen("result.dat", "w+");
-	FILE* param = fopen("param.dat", "w+");
+	fprintf(__result, "%d %lf %g\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
+}
 
-	fprintf(result, "%d %lf %lf\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
-	fprintf(param, "%d %d %lf %d %d\n", n, m, epsilon, max_it, freq_msg_mpi);
+void init_log(struct prgm_config* config, int n)
+{
+	__result = fopen("result.dat", "w");
+	FILE* config_fd = fopen("config.dat", "w");
+	fprintf(config_fd, "filename=%s\tepsilon=%lg\tfreq=%d\tn=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n", config->filename, config->epsilon, config->freq, n, config->m, config->max_it, config->nb_rep);
+	fclose(config_fd);
+}	
 
-	fclose(result);
-	fclose(param);
+void close_result()
+{
+	fclose(__result);
 }
 

@@ -12,9 +12,11 @@ int main(int argc, char **argv)
 	struct spectre spectre;
 	struct prgm_config config = init_program(argc, argv);
 
-	A = read_matrice("mat20x20.txt", &n, &n);
-	// A = read_matrice(argv[1], &n, &n); // vérification si argv[1] est un fichier existant
+	// A = read_matrice("mat20x20.txt", &n, &n);
+	A = read_matrice(config.filename, &n, &n);
 	x = MALLOC(n * sizeof(double));
+
+	init_log(&config, n);
 
 	#ifdef MULTIPRR
 		int rank_mpi;
@@ -38,6 +40,8 @@ int main(int argc, char **argv)
 		#else
 			spectre = prr(n, A, x, &prrinfo, &config);
 		#endif
+
+		log_result(prrinfo);
 	}
 
 	if(prrinfo.got_result){
@@ -54,14 +58,13 @@ int main(int argc, char **argv)
 		printf("count : %d\n", prrinfo.nb_it);
 		printf("tps exec : %lf µs\n", prrinfo.tps_exec);
 		printf("max residu : %lg\n", prrinfo.max_residu);
-
-		write_files(prrinfo, n, m, epsilon, max_it, freq_msg_mpi);
 	}
 
 	FREE(A);
 	FREE(spectre.vec_p);
 	FREE(spectre.vp);
 	FREE(x);
+	close_result();
 
 	#ifdef MULTIPRR
 		MPI_Finalize();
@@ -110,7 +113,7 @@ static struct prgm_config init_program(int argc, char **argv)
 			fprintf(stderr, "mauvais paramètre.\n");
 	}
 
-	if(argc != 5 || config.filename == NULL){
+	if(config.filename == NULL){
 		printf("Utilisation : %s <--options value>\n"\
 				"<--m : int> : nombre de vecteurs de ritz à extraire.\n"\
 				"<--max_it : int> : nombre d'itération maximum.\n"\
@@ -120,6 +123,10 @@ static struct prgm_config init_program(int argc, char **argv)
 				"<--freq : int> : fréquence des communications mpi (en nbr d'itération)\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
+
+	printf("filename=%s\tepsilon=%lg\tfreq=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n\n", config.filename, config.epsilon, config.freq, config.m, config.max_it, config.nb_rep);
+
+
 
 	return config;
 }
