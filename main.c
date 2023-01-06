@@ -16,8 +16,6 @@ int main(int argc, char **argv)
 	A = read_matrice(config.filename, &n, &n);
 	x = MALLOC(n * sizeof(double));
 
-	init_log(&config, n);
-
 	#ifdef MULTIPRR
 		int rank_mpi;
 		MPI_Init(&argc, &argv);
@@ -30,6 +28,8 @@ int main(int argc, char **argv)
 		srand48(get_nanosec());
 		config.freq = -1;
 	#endif
+
+	init_log(&config, n);
 
 	for (size_t i = 0; i < config.nb_rep; i++)
 	{
