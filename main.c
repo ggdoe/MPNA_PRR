@@ -111,17 +111,15 @@ static struct prgm_config init_program(int argc, char **argv)
 	}
 
 	if(argc != 5 || config.filename == NULL){
-		printf("Utilisation : ./prr_mpi <matrice> <epsilon> <nb_reps> <freq_msg_mpi>\n"\
-				"<matrice> : fichier à lire contenant la matrice à étudier\n"\
-				"<epsilon> : précision des résidus\n"\
-				"<nb_reps> : nombre de fois que l'algorithme sera exécuté \n"\
-				"<freq_msg_mpi> : entier représentant l'itération où les processus mpi communiquent\n");
+		printf("Utilisation : %s <--options value>\n"\
+				"<--m : int> : nombre de vecteurs de ritz à extraire.\n"\
+				"<--max_it : int> : nombre d'itération maximum.\n"\
+				"<--file : string> : fichier à lire contenant la matrice à étudier\n"\
+				"<--epsilon : float> : précision des résidus\n"\
+				"<--nb_rep : int> : nombre de fois que l'algorithme sera exécuté \n"\
+				"<--freq : int> : fréquence des communications mpi (en nbr d'itération)\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
-	// if(*epsilon <= 0 || *freq_msg_mpi <= 0 || *nb_reps <= 0){
-	// 	printf("Erreur : paramètre(s) négatif(s)\n");
-	// 	exit(EXIT_FAILURE);
-	// }
 
 	return config;
 }
