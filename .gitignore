@@ -1,7 +1,7 @@
 a.out
 prr_*
 multiprr_*
-
+*.dat
 
 .vscode/
 build/

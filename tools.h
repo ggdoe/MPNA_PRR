@@ -90,5 +90,6 @@ double max(double *x, int n);
 void rand_vector(int n, double *x);
 void print_matrice(double *A, int n, int m);
 double * read_matrice(char *filename, int *n, int *m);
+void write_files(struct prr_info prrinfo, int n, int m, double epsilon, int max_it, int freq_msg_mpi);
 
 #endif

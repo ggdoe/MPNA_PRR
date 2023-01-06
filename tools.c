@@ -64,25 +64,15 @@ double max(double *x, int n)
 	return max;
 }
 
-// void std_to_sym(double *in, double *out, int m)
-// {
-// 	size_t shift = 0;
+void write_files(struct prr_info prrinfo, int n, int m, double epsilon, int max_it, int freq_msg_mpi)
+{
+	FILE* result = fopen("result.dat", "w+");
+	FILE* param = fopen("param.dat", "w+");
 
-// 	for (size_t i = 0; i < m; i++) {
-// 		memcpy(out + shift, in + i * m + i, (m - i) * sizeof(double));
-// 		shift += m - i;
-// 	}
-// }
+	fprintf(result, "%d %lf %lf\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
+	fprintf(param, "%d %d %lf %d %d\n", n, m, epsilon, max_it, freq_msg_mpi);
 
-// void sym_to_std(double *in, double *out, int m)
-// {
-// 	size_t shift = 0;
-
-// 	for (size_t i = 0; i < m; i++) {
-// 		memcpy(out + i * m + i, in + shift, (m - i) * sizeof(double));
-// 		shift += m - i;
-// 		for (size_t j = i + 1; j < m; j++)
-// 			out[j * m + i] = out[i * m + j];
-// 	}
-// }
+	fclose(result);
+	fclose(param);
+}
 
