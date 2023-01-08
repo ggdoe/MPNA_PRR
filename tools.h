@@ -91,7 +91,8 @@ void rand_vector(int n, double *x);
 void print_matrice(double *A, int n, int m);
 double * read_matrice(char *filename, int *n, int *m);
 void log_result(struct prr_info prrinfo);
-void init_log(struct prgm_config* prgmconfig, int n);
+void init_log();
 void close_result();
+void log_config(struct prgm_config* config, int n);
 
 #endif

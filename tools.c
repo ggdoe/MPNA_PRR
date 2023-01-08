@@ -71,13 +71,17 @@ void log_result(struct prr_info prrinfo)
 	fprintf(__result, "%d %lf %g\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
 }
 
-void init_log(struct prgm_config* config, int n)
+void init_log()
 {
-	__result = fopen("result.dat", "w");
+	__result = fopen("result.dat", "a");
+}	
+
+void log_config(struct prgm_config* config, int n)
+{
 	FILE* config_fd = fopen("config.dat", "w");
 	fprintf(config_fd, "filename=%s\tepsilon=%lg\tfreq=%d\tn=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n", config->filename, config->epsilon, config->freq, n, config->m, config->max_it, config->nb_rep);
 	fclose(config_fd);
-}	
+}
 
 void close_result()
 {

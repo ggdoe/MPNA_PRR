@@ -7,6 +7,7 @@ int main(int argc, char **argv)
 {
 	int n;
 	double *A = NULL, *x = NULL;
+	int rank_mpi;
 
 	struct prr_info prrinfo;
 	struct spectre spectre;
@@ -17,7 +18,6 @@ int main(int argc, char **argv)
 	x = MALLOC(n * sizeof(double));
 
 	#ifdef MULTIPRR
-		int rank_mpi;
 		MPI_Init(&argc, &argv);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
 
@@ -27,9 +27,12 @@ int main(int argc, char **argv)
 	#else
 		srand48(get_nanosec());
 		config.freq = -1;
+		rank_mpi = 0;
 	#endif
 
-	init_log(&config, n);
+	init_log();
+	if(rank_mpi == 0) // seul le master log la config
+		log_config(&config, n);
 
 	for (size_t i = 0; i < config.nb_rep; i++)
 	{
@@ -41,7 +44,13 @@ int main(int argc, char **argv)
 			spectre = prr(n, A, x, &prrinfo, &config);
 		#endif
 
-		log_result(prrinfo);
+		if(prrinfo.got_result)
+			log_result(prrinfo);
+		
+		if(i + 1 < config.nb_rep){
+			FREE(spectre.vp);
+			FREE(spectre.vec_p);
+		}
 	}
 
 	if(prrinfo.got_result){
@@ -124,7 +133,7 @@ static struct prgm_config init_program(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	printf("filename=%s\tepsilon=%lg\tfreq=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n\n", config.filename, config.epsilon, config.freq, config.m, config.max_it, config.nb_rep);
+	// printf("filename=%s\tepsilon=%lg\tfreq=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n\n", config.filename, config.epsilon, config.freq, config.m, config.max_it, config.nb_rep);
 
 
 
