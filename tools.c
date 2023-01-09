@@ -68,7 +68,7 @@ FILE* __result;
 
 void log_result(struct prr_info prrinfo)
 {
-	fprintf(__result, "%d %lf %g\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
+	fprintf(__result, "%d %lf %lg\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
 }
 
 void init_log()
