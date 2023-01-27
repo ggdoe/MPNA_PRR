@@ -4,9 +4,8 @@ module load gcc/11.2.0/gcc-4.8.5 openmpi/4.1.1/gcc-11.2.0 openblas/0.3.8/gcc-9.2
 
 mpi_node=8
 omp_thread=2
-#omp_num_th=2
 
-filename=mat7x7.txt
+filename="matrices/mat7x7.txt"
 epsilon=1e-2
 freq=100
 m=5
