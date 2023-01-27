@@ -1,5 +1,8 @@
 #include "tools.h"
 
+static double * read_matricetxt(char *filename, int *n, int *m);
+static double * read_matrixmarket(char *filename, int *n, int *m);
+
 // row major (n,m)
 void print_matrice(double *A, int n, int m)
 {
@@ -22,6 +25,18 @@ void rand_vector(int n, double *x)
 // row major (n,m)
 double * read_matrice(char *filename, int *n, int *m)
 {
+	if(!strcmp(strrchr(filename, '.'), ".txt"))
+		return read_matricetxt(filename, n, m);
+	else if(!strcmp(strrchr(filename, '.'), ".mtx"))
+		return read_matrixmarket(filename, n, m);
+	else {
+		fprintf(stderr, "Erreur extention de fichier non reconnue. (%s)\n", filename);
+		exit(EXIT_FAILURE);
+	}
+}
+
+static double * read_matricetxt(char *filename, int *n, int *m)
+{
 	int N, M;
 	FILE *fd = fopen(filename, "r");
 
@@ -39,6 +54,45 @@ double * read_matrice(char *filename, int *n, int *m)
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < M; j++)
 			fscanf(fd, "%lf" , &A[ M * i + j]);
+
+	fclose(fd);
+	if(n)
+		*n = N;
+	if(m)
+		*m = M;
+	return A;
+}
+
+static double * read_matrixmarket(char *filename, int *n, int *m)
+{
+	int N, M, nblines;
+	FILE *fd = fopen(filename, "r");
+
+	if( fd == NULL )
+	{
+		fprintf(stderr, "Erreur lors de l'exécution de fopen(). Il est probable que le fichier %s ne soit pas présent dans le dossier courant.\n", filename);
+		exit(EXIT_FAILURE);
+	}
+
+	fscanf(fd, "%d", &N);
+	fscanf(fd, "%d", &M);
+	fscanf(fd, "%d", &nblines);
+
+	double *A = MALLOC(N * M * sizeof(double));
+
+	for (int i = 0; i < N * M; i++)
+		A[i] = 0;
+
+	int i,j;
+	double value;
+	for (int l = 0; l < nblines; l++){
+		fscanf(fd, "%d", &i);	
+		fscanf(fd, "%d", &j);
+		fscanf(fd, "%lf", &value);
+		--i;--j;
+		A[i * M + j] = value;
+		A[j * M + i] = value;
+	}
 
 	fclose(fd);
 	if(n)

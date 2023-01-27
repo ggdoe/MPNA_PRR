@@ -9,14 +9,15 @@ int main(int argc, char **argv)
 	double *A = NULL, *x = NULL;
 	int rank_mpi;
 
+
 	struct prr_info prrinfo;
 	struct spectre spectre;
 	struct prgm_config config = init_program(argc, argv);
 
 	// A = read_matrice("mat20x20.txt", &n, &n);
 	A = read_matrice(config.filename, &n, &n);
-	x = MALLOC(n * sizeof(double));
 
+	x = MALLOC(n * sizeof(double));
 	#ifdef MULTIPRR
 		MPI_Init(&argc, &argv);
 		MPI_Comm_rank(MPI_COMM_WORLD, &rank_mpi);
