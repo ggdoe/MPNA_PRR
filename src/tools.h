@@ -9,13 +9,13 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-// #include <omp.h>
 
 #ifdef MKL
 	#include <mkl.h>
 #else
 	#include <cblas.h>
 	#include <lapacke.h>
+	// #include <omp.h>
 #endif
 
 #ifdef MULTIPRR

@@ -132,8 +132,27 @@ void init_log()
 
 void log_config(struct prgm_config* config, int n)
 {
+	int nb_mpi, nb_omp;
+
+	#ifdef MKL
+		nb_omp = mkl_get_max_threads();
+	#else
+		nb_omp = openblas_get_num_threads();
+		// nb_omp = omp_get_max_threads();
+	#endif
+
+	#ifdef MULTIPRR
+		MPI_Comm_size(MPI_COMM_WORLD, &nb_mpi);
+	#else
+		nb_mpi = 1;
+	#endif
+
 	FILE* config_fd = fopen("config.dat", "w");
-	fprintf(config_fd, "filename=%s\tepsilon=%lg\tfreq=%d\tn=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n", config->filename, config->epsilon, config->freq, n, config->m, config->max_it, config->nb_rep);
+	fprintf(config_fd, "filename=%s\tepsilon=%lg\tfreq=%d\tn=%d\tm=%d\tmax_it=%d\tnb_rep=%d\tomp=%d\tmpi=%d\n", 
+			config->filename, config->epsilon, 
+			config->freq, n, config->m, 
+			config->max_it, config->nb_rep,
+			nb_omp, nb_mpi);
 	fclose(config_fd);
 }
 
