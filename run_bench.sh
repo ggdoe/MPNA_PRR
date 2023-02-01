@@ -1,39 +1,32 @@
 #!/bin/bash
+#SBATCH --ntasks=$2
+#SBATCH --cpus-per-task=$3
+
 module load intel/20.0.4/gcc-4.8.5 intel-mkl/2020.4.304/intel-20.0.4.304 intel-mpi/2019.9.304/intel-20.0.4.304
 module load gcc/11.2.0/gcc-4.8.5 openmpi/4.1.1/gcc-11.2.0 openblas/0.3.8/gcc-9.2.0
 
-mpi_node=8
-omp_thread=2
-
-filename="matrices/mat7x7.txt"
-epsilon=1e-2
-freq=100
-m=5
-max_it=0
-nb_rep=3
-
-path=logs/$(date +%s)
-# path=logs/
-mkdir -p $path
-
-for i in $m
+while IFS=' ' read -r -u "$fd_num" cc execution m max_it filename epsilon nb_rep freq
 do
-	echo "step : m = $i"
-	args="--m $i --max_it $max_it --file $filename --epsilon $epsilon --nb_rep $nb_rep --freq $freq"
-	rm -f result.dat
-  
-	srun --cpus-per-task=$omp_thread ./prr_gcc $args > /dev/null
-	mv result.dat $path/gcc_result_$m.dat
+	if [[ ${cc:0:1} == "#" ]]; then 
+		continue
+	fi
 
-	srun --cpus-per-task=$omp_thread ./prr_icc $args > /dev/null
-	mv result.dat $path/icc_result_$m.dat
+	if [ "$execution" == "seq" ]; then
+		exe="prr_$cc"
+	elif [ "$execution" == "par" ]; then
+		exe="multiprr_$cc"
+	else
+		echo "Error : execution has to be \"seq\" or \"par\". Check \"run_config.csv\"."
+		exit 1
+	fi
 
-	srun --ntasks=$mpi_node --cpus-per-task=$omp_thread ./multiprr_gcc $args > /dev/null
-	mv result.dat $path/multi_gcc_result_$m.dat
+	mat_name="$(basename -- "$filename")"
+	mat_name="${mat_name%.*}"
+	path="logs"/"${mat_name}_${execution}_${cc}_$(date "+%F-%T")"
+	mkdir -p $path
 
-	srun --ntasks=$mpi_node --cpus-per-task=$omp_thread ./multiprr_icc $args > /dev/null
-	mv result.dat $path/multi_icc_result_$m.dat
-
-	mv config.dat $path/config_$m.dat
-done
-
+	args="--m $m --max_it $max_it --file $filename --epsilon $epsilon --nb_rep $nb_rep --freq $freq"
+	srun ./$exe $args > /dev/null
+	mv result.dat $path/${execution}_${cc}_result_$m.dat
+	mv config.dat $path/config_$m.cfg
+done {fd_num}< <(tail -n +2 run_config.cfg)

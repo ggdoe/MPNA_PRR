@@ -120,7 +120,7 @@ static struct prgm_config init_program(int argc, char **argv)
 			config.max_it = atoi(argv[++i]);
 
 		else
-			fprintf(stderr, "mauvais paramètre.\n");
+			fprintf(stderr, "Mauvais paramètre.\n");
 	}
 
 	if(config.filename == NULL){
