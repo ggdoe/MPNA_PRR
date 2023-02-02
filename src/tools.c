@@ -133,7 +133,6 @@ void init_log()
 void log_config(struct prgm_config* config, int n)
 {
 	int nb_mpi, nb_omp;
-	char *str_compiler;
 
 	#ifdef MKL
 		nb_omp = mkl_get_max_threads();
@@ -152,9 +151,9 @@ void log_config(struct prgm_config* config, int n)
 
 	FILE* config_fd = fopen("config.dat", "w");
 	fprintf(config_fd, 
-		STR_COMPILER "\tomp=%d\tmpi=%d\tfilename=%s\tn=%d\tm=%d\t"\
+		STR_COMPILER "\tmpi=%d\tomp=%d\tfilename=%s\tn=%d\tm=%d\t"\
 		"epsilon=%lg\tnb_rep=%d\tfreq=%d\tmax_it=%d\n", 
-		nb_omp, nb_mpi,
+		nb_mpi, nb_omp,
 		config->filename, n, config->m, 
 		config->epsilon, config->nb_rep, 
 		config->freq, config->max_it);

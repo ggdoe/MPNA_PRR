@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 		// printf("seed : %ld\n", seed);
 	#else
 		srand48(get_nanosec());
-		config.freq = -1;
+		config.freq = 1;
 		rank_mpi = 0;
 	#endif
 
@@ -133,10 +133,6 @@ static struct prgm_config init_program(int argc, char **argv)
 				"<--freq : int> : fréquence des communications mpi (en nbr d'itération)\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
-
-	// printf("filename=%s\tepsilon=%lg\tfreq=%d\tm=%d\tmax_it=%d\tnb_rep=%d\n\n", config.filename, config.epsilon, config.freq, config.m, config.max_it, config.nb_rep);
-
-
 
 	return config;
 }
