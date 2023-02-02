@@ -22,11 +22,10 @@ struct spectre prr(int n, double *restrict A, double *restrict x, struct prr_inf
 	int max_it = config->max_it;
 	double _epsilon = config->epsilon;
 
-	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
 	init_prr(n,m, &p, &spectre, A, &max_it);
-
 	normalize(x,n);
-
+	
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
 
 	// boucle des itérations de l'algorithme PRR
 	do
@@ -75,10 +74,10 @@ struct spectre multi_prr(int n, double *restrict A, double *restrict x, struct p
 	double _epsilon = config->epsilon;
 
 	init_prr(n,m, &p, &spectre, A, &max_it);
-
 	normalize(x,n);
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &time_start);
+	
 	// boucle des itérations de l'algorithme PRR
 	for(;;){
 		// algorithme PRR:
