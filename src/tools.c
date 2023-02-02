@@ -133,12 +133,15 @@ void init_log()
 void log_config(struct prgm_config* config, int n)
 {
 	int nb_mpi, nb_omp;
+	char *str_compiler;
 
 	#ifdef MKL
 		nb_omp = mkl_get_max_threads();
+		#define STR_COMPILER "icc"
 	#else
 		nb_omp = openblas_get_num_threads();
 		// nb_omp = omp_get_max_threads();
+		#define STR_COMPILER "gcc"
 	#endif
 
 	#ifdef MULTIPRR
@@ -148,12 +151,15 @@ void log_config(struct prgm_config* config, int n)
 	#endif
 
 	FILE* config_fd = fopen("config.dat", "w");
-	fprintf(config_fd, "filename=%s\tepsilon=%lg\tfreq=%d\tn=%d\tm=%d\tmax_it=%d\tnb_rep=%d\tomp=%d\tmpi=%d\n", 
-			config->filename, config->epsilon, 
-			config->freq, n, config->m, 
-			config->max_it, config->nb_rep,
-			nb_omp, nb_mpi);
+	fprintf(config_fd, 
+		STR_COMPILER "\tomp=%d\tmpi=%d\tfilename=%s\tn=%d\tm=%d\t"\
+		"epsilon=%lg\tnb_rep=%d\tfreq=%d\tmax_it=%d\n", 
+		nb_omp, nb_mpi,
+		config->filename, n, config->m, 
+		config->epsilon, config->nb_rep, 
+		config->freq, config->max_it);
 	fclose(config_fd);
+	#undef STR_COMPILER
 }
 
 void close_result()
