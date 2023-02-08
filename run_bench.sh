@@ -3,7 +3,7 @@
 module load intel/20.0.4/gcc-4.8.5 intel-mkl/2020.4.304/intel-20.0.4.304 intel-mpi/2019.9.304/intel-20.0.4.304
 module load gcc/11.2.0/gcc-4.8.5 openmpi/4.1.1/gcc-11.2.0 openblas/0.3.8/gcc-9.2.0
 
-export OMP_PLACES=cores
+#export OMP_PLACES=threads
 declare -i counter=1
 path="logs/$(date "+%F-%T")"
 mkdir -p $path
@@ -16,7 +16,6 @@ do
 
 	export OMP_NUM_THREADS=$omp_thread
 	export MKL_NUM_THREADS=$omp_thread
-	export OPENBLAS_NUM_THREADS=$omp_thread
 
 	if [[ $mpi_node -lt 1 ]] || [[ $omp_thread -lt 1 ]]; then
 		echo "Error : either mpi_node or omp_thread is lower than 1. Check \"run_config.cfg\"."

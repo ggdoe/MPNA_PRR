@@ -109,7 +109,7 @@ struct spectre multi_prr(int n, double *restrict A, double *restrict x, struct p
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;
-	prrinfo->nb_it = count;
+	prrinfo->nb_it = count; // temps exec en µs
 	prrinfo->tps_exec = (double)(time_end.tv_sec - time_start.tv_sec) * 1e6 + (double)(time_end.tv_nsec - time_start.tv_nsec) * 1e-3;
 	prrinfo->got_result = (minmaxres == maxres);
 	

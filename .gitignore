@@ -6,4 +6,4 @@ multiprr_*
 .vscode/
 build/
 logs/
-
+*.gz

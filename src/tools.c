@@ -122,6 +122,7 @@ FILE* __result;
 
 void log_result(struct prr_info prrinfo)
 {
+	// temps exec en µs
 	fprintf(__result, "%d %lf %lg\n", prrinfo.nb_it, prrinfo.tps_exec, prrinfo.max_residu);
 }
 

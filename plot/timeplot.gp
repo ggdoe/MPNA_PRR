@@ -1,6 +1,6 @@
 # set term png size 600,400
 set term png size 1200,800
-set output "OUTPUT_iter.png"
+set output "OUTPUT_time.png"
 #
 # Find number of points
 #
@@ -17,6 +17,6 @@ set key box top left
 
 # Uniform
 set title "Uniform Distribution N=" . N
-plot filename u (bin($1,5)):(10./N) smooth freq t 'smooth frequency' w boxes fs solid 0.4, \
+plot filename u (bin($2 / $1,5)):(10./N) smooth freq t 'smooth frequency' w boxes fs solid 0.4, \
      '' u 1:(1.) smooth cnorm t 'smooth cnorm' lw 2
 # pause -1
