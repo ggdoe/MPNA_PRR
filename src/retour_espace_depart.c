@@ -23,6 +23,7 @@ void retour_espace_depart(int n, int m, const double *restrict Vm, struct spectr
 	for(int i = 0; i < m; i++)
 		normalize(q + i*n, n);
 
+	// échange de pointeur pour éviter une copie entière
 	double *swap = _tmp_lwork;
 	_tmp_lwork = spectre->vec_p;
 	spectre->vec_p = swap;

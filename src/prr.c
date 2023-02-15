@@ -96,16 +96,18 @@ struct spectre multi_prr(int n, double *restrict A, double *restrict x, struct p
 		// On évite de lancer les communications mpi à chaque itération
 		count++;
 		if (maxres < _epsilon || count >= max_it){
+			clock_gettime(CLOCK_MONOTONIC_RAW, &time_end);
 			MPI_Allreduce(&maxres, &minmaxres, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 			break;
 		}
 		else if(count % interval_comm == 0){
 			MPI_Allreduce(&maxres, &minmaxres, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
-			if(minmaxres < _epsilon)
+			if(minmaxres < _epsilon){
+				clock_gettime(CLOCK_MONOTONIC_RAW, &time_end);
 				break;
+			}
 		}
 	}
-	clock_gettime(CLOCK_MONOTONIC_RAW, &time_end);
 
 	free_prr(&p);
 	prrinfo->max_residu = maxres;

@@ -14,11 +14,11 @@ bin(x, s) = s*int(x/s)
 
 set key box top left
 
-set xrange [0:25000]
-set xlabel "Durée totale calcul"
+# set xrange [0:25000]
+set xlabel "Temps (ms)"
 
 # Uniform
-set title "Distribution de la durée totale de calcul\n" . configfile
-plot filename u (bin($2 / $1,100)):(30./N) smooth freq t 'en fréquence' w boxes fs solid 0.4, \
+set title "Distribution du temps de calcul par itérations\n" . configfile
+plot filename u (bin($2 / $1 ,100)):(30./N) smooth freq t 'en fréquence' w boxes fs solid 0.4, \
      '' u ($2 / $1):(1.) smooth cnorm t 'en cumulée' lw 2
 # pause -1
