@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# --> module à charger :
+# liste des modules à charger pour icc et gcc :
 module load intel/20.0.4/gcc-4.8.5 intel-mkl/2020.4.304/intel-20.0.4.304 intel-mpi/2019.9.304/intel-20.0.4.304
 module load gcc/11.2.0/gcc-4.8.5 openmpi/4.1.1/gcc-11.2.0 openblas/0.3.8/gcc-9.2.0
 
