@@ -20,7 +20,7 @@ void projection(struct projection *p, double *restrict A, int n, int m, double *
 	}
 
 	// Remplir Bm et Bm-1
-	// #pragma omp parallel for
+	#pragma omp parallel for collapse(2)
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < m; j++)

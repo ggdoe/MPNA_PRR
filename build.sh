@@ -5,7 +5,7 @@ module load intel/20.0.4/gcc-4.8.5 intel-mkl/2020.4.304/intel-20.0.4.304 intel-m
 module load gcc/11.2.0/gcc-4.8.5 openmpi/4.1.1/gcc-11.2.0 openblas/0.3.8/gcc-9.2.0
 
 FILES="src/*.c"
-ICC_FLAGS="-Wall -std=c11 -flto -O3 -mkl -DMKL -march=native"
+ICC_FLAGS="-Wall -fopenmp -std=c11 -flto -O3 -mkl -DMKL -march=native"
 GCC_FLAGS="-Wall -fopenmp -flto -O3 -lm -lopenblas -march=native"
 #-no-multibyte-chars
 

@@ -16,7 +16,7 @@ double* calcul_residu(int n, int m, const double *restrict A, struct spectre *re
 	double *residu = (double*) _tmp_m;
 	double* lambda_q = _tmp_lwork;
 
-	// #pragma omp parallel for
+	#pragma omp parallel for
 	for (int i = 0; i < m; i++)
 	{
 		memcpy(lambda_q + i*n, q+i*n, n*sizeof(double)); //copier q_i dans lambda_q
