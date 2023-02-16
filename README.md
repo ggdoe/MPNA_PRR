@@ -18,9 +18,9 @@ La méthode de Padé-Rayleigh-Ritz est une méthode qui permet de trouver les é
 
 * `logs/` : contient les résultats obtenus après exécution de notre implémentation de la méthode. Le nom du dossier est de la forme `m${valeur de m}` où `m` indique le nombre d'éléments propres souhaités. Ces dossiers contiennent des couples de fichiers : un fichier `.cfg` et un fichier `.dat`. Le fichier `.cfg` contient les paramètres à utiliser lors de l'exécution tandis que le fichier `.dat` contient les résultats obtenus. Il comporte dans cet ordre&nbsp;: le nombre d'itérations effectuées, le temps d'exécution en μs et le résidu maximal obtenu. Ces fichiers sont nommés ainsi : `${id}_${compilateur}_mpi-${nombre de processus MPI}_omp-${nombre de threads OpenMP}`.
 
-* `matrices/` : contient les matrices utilisées pour tester notre implémentation de la méthode Padé-Rayleigh-Ritz. Seuls les formats `.txt` et `.mtx` sont supportés. Les fichiers doivent respecter une certaine nomenclature. L'exemple est ici une matrice 2x2. Ici `n` représente la dimension de la matrice symétrique, `nblines` le nombre de lignes du fichiers (ici le nombre de lignes représente le nombre d'éléments de la matrice) et `value` la valeur que l'on souhaite attribuer.
+* `matrices/` : contient les matrices utilisées pour tester notre implémentation de la méthode Padé-Rayleigh-Ritz. Seuls les formats `.txt` et `.mtx` sont supportés. Des matrices tests sont déjà fournies. Il reste toutefois possible d'utiliser ses propres matrices. Les fichiers doivent uniquement respecter une certaine nomenclature. L'exemple est ici une matrice 2x2. Ici `n` représente la dimension de la matrice symétrique, `nblines` le nombre de lignes du fichiers (ici le nombre de lignes représente le nombre d'éléments de la matrice) et `value` la valeur que l'on souhaite attribuer.
 
-Pour utiliser une matrice au format mtx :
+Pour utiliser une matrice au format mtx le fichier doit être de la forme suivante :
 ```
 n n nblines
 i j value
@@ -29,7 +29,7 @@ i j value
 i j value
 ```
 
-Pour utiliser une matrice au format txt :
+Pour utiliser une matrice au format txt le fichier doit être de la forme suivante :
 ```
 n n 
 value value
