@@ -2,7 +2,7 @@
 
 Ceci est la notice d'instruction du projet Padé-Rayleigh-Ritz. Ce projet a été réalisé par DOEBELE Grégoire et VIDAL Antoine dans le cadre du Master 2 Calcul Haute Performance et Simulation (CHPS) de l'UVSQ.
 
-# Sommaire
+## Sommaire
 
 1. Présentation du projet
 2. Structure du projet
@@ -10,11 +10,11 @@ Ceci est la notice d'instruction du projet Padé-Rayleigh-Ritz. Ce projet a ét�
 4. Utilisation du programme
 5. Crédits
 
-# Présentation du projet
+## Présentation du projet
 
 La méthode de Padé-Rayleigh-Ritz est une méthode qui permet de trouver les éléments propres d'une matrice symétrique A de taille n. C'est une méthode itérative : elle ne calcule pas les solutions exactes mais une approximation des solutions exactes. Le nombre d'éléments propres souhaités est noté `m`.
 
-# Structure du projet
+## Structure du projet
 
 * `logs/` : contient les résultats obtenus après exécution de notre implémentation de la méthode. Le nom du dossier est de la forme `m${valeur de m}` où `m` indique le nombre d'éléments propres souhaités. Ces dossiers contiennent des couples de fichiers : un fichier `.cfg` et un fichier `.dat`. Le fichier `.cfg` contient les paramètres à utiliser lors de l'exécution tandis que le fichier `.dat` contient les résultats obtenus. Il comporte dans cet ordre&nbsp;: le nombre d'itérations effectuées, le temps d'exécution en μs et le résidu maximal obtenu. Ces fichiers sont nommés ainsi : `${id}_${compilateur}_mpi-${nombre de processus MPI}_omp-${nombre de threads OpenMP}`.
 
@@ -46,11 +46,11 @@ value value
 
 * `run_bench.sh` et `run_bench.cfg` : fichiers permettant de lancer le programme. `run_bench.sh` utilise le contenu de `run_bench.cfg` pour effectuer ses tests.
 
-# Installation du programme
+## Installation du programme
 
-## Compilation
+### Compilation
 
-### Outils nécessaires
+#### Outils nécessaires
 
 Les outils suivants sont utilisés pour compiler notre programme :
 
@@ -59,7 +59,7 @@ Les outils suivants sont utilisés pour compiler notre programme :
 
 Le projet a été pensé et compilé pour le cluster [Ruche](https://mesocentre.pages.centralesupelec.fr/user_doc/) ce qui signifie que les modules et librairies sont à installer manuellement si vous ne comptez pas utiliser ce cluster. Si vous utiliser ce cluster les outils sont déjà installés.
 
-### Obtention des exécutables
+#### Obtention des exécutables
 
 Pour compiler le programme, il suffit de lancer `./build.sh`. Ceci produira quatre exécutables : 
 * `prr_gcc` : version séquentielle utilisant le compilateur `gcc`
@@ -68,11 +68,11 @@ Pour compiler le programme, il suffit de lancer `./build.sh`. Ceci produira quat
 * `multiprr_icc` : version parallèle utilisant le compilateur `icc`
 
 
-# Utilisation du programme
+## Utilisation du programme
 
 Une fois les exécutables obtenus, il ne reste plus qu'à configurer les tests pour pouvoir lancer les exécutables.
 
-## Fichier de configuration `run_bench.cfg`
+### Fichier de configuration `run_bench.cfg`
 
 Le fichier `run_bench.cfg` comme son nom l'indique est un fichier de configuration. Il permet de définir le contexte et les paramètres avec lesquelles le programme va se lancer. Il se définit comme ci-dessous :
 
@@ -101,18 +101,18 @@ Le contenu de ce fichier est semblable à celui d'un fichier `.csv`. La premièr
 
 Il suffit donc de l'éditer avec n'importe quel éditeur de texte pour y ajouter les tests souhaités.
 
-## Lancement des tests avec le fichier `run_bench.sh`
+### Lancement des tests avec le fichier `run_bench.sh`
 
 Une fois le fichier `run_config.cfg` modifié, il suffit de lancer `./run_bench.sh` pour lancer les tests. Les résultats des tests se retrouvent ensuite dans le dossier `logs/`.
 
-# Crédits
+## Crédits
 
-## Auteurs 
+### Auteurs 
 
 * DOEBELE Grégoire et VIDAL Antoine : réalisation du projet
 * EMAD Nahid : apport des connaissances et ressources sur la méthode Padé-Rayleigh-Ritz
 
-## Outils
+### Outils
 
 * Compilateurs `gcc` avec les librairies `OpenBLAS` et `OpenMPI` et `icc` avec les librairies `MKL` et `Intel MPI`
 * Gnuplot pour la création des graphiques
