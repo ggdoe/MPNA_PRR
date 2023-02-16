@@ -68,7 +68,7 @@ Pour compiler le programme, il suffit de lancer `./build.sh`. Ceci produira quat
 * `multiprr_icc` : version parallèle utilisant le compilateur `icc`
 
 
-## Utilisation du programme
+# Utilisation du programme
 
 Une fois les exécutables obtenus, il ne reste plus qu'à configurer les tests pour pouvoir lancer les exécutables.
 
@@ -105,14 +105,14 @@ Il suffit donc de l'éditer avec n'importe quel éditeur de texte pour y ajouter
 
 Une fois le fichier `run_config.cfg` modifié, il suffit de lancer `./run_bench.sh` pour lancer les tests. Les résultats des tests se retrouvent ensuite dans le dossier `logs/`.
 
-## Crédits
+# Crédits
 
-### Auteurs 
+## Auteurs 
 
 * DOEBELE Grégoire et VIDAL Antoine : réalisation du projet
 * EMAD Nahid : apport des connaissances et ressources sur la méthode Padé-Rayleigh-Ritz
 
-### Outils
+## Outils
 
 * Compilateurs `gcc` avec les librairies `OpenBLAS` et `OpenMPI` et `icc` avec les librairies `MKL` et `Intel MPI`
 * Gnuplot pour la création des graphiques
