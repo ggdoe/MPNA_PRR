@@ -16,7 +16,7 @@ La méthode de Padé-Rayleigh-Ritz est une méthode qui permet de trouver les é
 
 ## Structure du projet
 
-* `logs/` : contient les résultats obtenus après exécution de notre implémentation de la méthode. Le nom du dossier est de la forme `m${valeur de m}` où `m` indique le nombre d'éléments propres souhaités. Ces dossiers contiennent des couples de fichiers : un fichier `.cfg` et un fichier `.dat`. Le fichier `.cfg` contient les paramètres à utiliser lors de l'exécution tandis que le fichier `.dat` contient les résultats obtenus. Il comporte dans cet ordre&nbsp;: le nombre d'itérations effectuées, le temps d'exécution en μs et le résidu maximal obtenu. Ces fichiers sont nommés ainsi : `${id}_${compilateur}_mpi-${nombre de processus MPI}_omp-${nombre de threads OpenMP}`.
+* `logs/` : contient les résultats obtenus après exécution de notre implémentation de la méthode. Les fichiers contenus à l'intérieur fonctionnent par paire : il y a un fichier `.cfg` et un fichier `.dat`. Le fichier `.cfg` contient les paramètres à utiliser lors de l'exécution tandis que le fichier `.dat` contient les résultats obtenus. Il comporte dans cet ordre&nbsp;: le nombre d'itérations effectuées, le temps d'exécution en μs et le résidu maximal obtenu.
 
 * `matrices/` : contient les matrices utilisées pour tester notre implémentation de la méthode Padé-Rayleigh-Ritz. Seuls les formats `.txt` et `.mtx` sont supportés. Des matrices tests sont déjà fournies. Il reste toutefois possible d'utiliser ses propres matrices. Les fichiers doivent uniquement respecter une certaine nomenclature. L'exemple est ici une matrice 2x2. Ici `n` représente la dimension de la matrice symétrique, `nblines` le nombre de lignes du fichiers (ici le nombre de lignes représente le nombre d'éléments de la matrice) et `value` la valeur que l'on souhaite attribuer.
 
@@ -96,7 +96,7 @@ Le contenu de ce fichier est semblable à celui d'un fichier `.csv`. La premièr
 | freq      | fréquence à laquelle les processus MPI vont communiquer     |
 | max_it    | nombre d'itérations maximal lors d'une seule répétition     |
 
-Il suffit donc de l'éditer avec n'importe quel éditeur de texte pour y ajouter les tests souhaités.
+Il suffit donc de l'éditer avec n'importe quel éditeur de texte pour y ajouter les tests souhaités. En fonction des paramètres l'un des quatre exécutables sera choisi.
 
 ### Lancement des tests avec le fichier `run_bench.sh`
 
@@ -112,7 +112,7 @@ Une fois le fichier `run_config.cfg` modifié, il suffit de lancer `./run_bench.
 ### Outils
 
 * Compilateurs `gcc` avec les librairies `OpenBLAS` et `OpenMPI` et `icc` avec les librairies `MKL` et `Intel MPI`
-* Gnuplot pour la création des graphiques
+* Gnuplot pour les graphiques
 * MatrixMarket et [Catonmat](https://catonmat.net/tools/generate-symmetric-matrices) pour l'obtention de matrices symétriques
 * Visual Studio Code et VIM pour l'édition de texte
 * Git et Github pour le versioning et l'hébergement des fichiers
