@@ -46,11 +46,9 @@ value value
 
 * `run_bench.sh` et `run_bench.cfg` : fichiers permettant de lancer le programme. `run_bench.sh` utilise le contenu de `run_bench.cfg` pour effectuer ses tests.
 
-## Installation du programme
+## Prise en main du programme
 
-### Compilation
-
-#### Outils nécessaires
+### Outils nécessaires
 
 Les outils suivants sont utilisés pour compiler notre programme :
 
@@ -59,14 +57,13 @@ Les outils suivants sont utilisés pour compiler notre programme :
 
 Le projet a été pensé et compilé pour le cluster [Ruche](https://mesocentre.pages.centralesupelec.fr/user_doc/) ce qui signifie que les modules et librairies sont à installer manuellement si vous ne comptez pas utiliser ce cluster. Si vous utiliser ce cluster les outils sont déjà installés.
 
-#### Obtention des exécutables
+### Obtention des exécutables
 
 Pour compiler le programme, il suffit de lancer `./build.sh`. Ceci produira quatre exécutables : 
 * `prr_gcc` : version séquentielle utilisant le compilateur `gcc`
 * `prr_icc` : version séquentielle utilisant le compilateur `icc`
 * `multiprr_gcc` : version parallèle utilisant le compilateur `gcc`
 * `multiprr_icc` : version parallèle utilisant le compilateur `icc`
-
 
 ## Utilisation du programme
 
