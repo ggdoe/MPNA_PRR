@@ -72,7 +72,7 @@ Pour compiler le programme, il suffit de lancer `./build.sh`. Ceci produira quat
 
 Une fois les exécutables obtenus, il ne reste plus qu'à configurer les tests pour pouvoir lancer les exécutables.
 
-### Fichier de configuration `run_bench.cfg`
+## Fichier de configuration `run_bench.cfg`
 
 Le fichier `run_bench.cfg` comme son nom l'indique est un fichier de configuration. Il permet de définir le contexte et les paramètres avec lesquelles le programme va se lancer. Il se définit comme ci-dessous :
 
@@ -101,7 +101,7 @@ Le contenu de ce fichier est semblable à celui d'un fichier `.csv`. La premièr
 
 Il suffit donc de l'éditer avec n'importe quel éditeur de texte pour y ajouter les tests souhaités.
 
-### Lancement des tests avec le fichier `run_bench.sh`
+## Lancement des tests avec le fichier `run_bench.sh`
 
 Une fois le fichier `run_config.cfg` modifié, il suffit de lancer `./run_bench.sh` pour lancer les tests. Les résultats des tests se retrouvent ensuite dans le dossier `logs/`.
 
