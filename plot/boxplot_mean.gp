@@ -18,6 +18,7 @@ set pointsize 0.5
 configfile=system("cut --output-delimiter=' - ' -f5,6,7 'FILENAME.cfg'")
 
 set title "Durée de calcul par itération\n" . configfile
+set grid
 
 unset key
 # set border 2
