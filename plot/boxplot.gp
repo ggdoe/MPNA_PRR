@@ -23,6 +23,7 @@ set grid
 unset key
 # set border 2
 # set xtics ("mpi=1 - omp=1" 1, "mpi=1 - omp=8" 2, "mpi=8 - omp=16" 3) scale 0.0
+set xtics ("1" 1, "2" 2, "4" 3, "6" 4, "8" 5, "10" 6, "12" 7, "14" 8, "16" 9) scale 0.0
 # set xtics nomirror
 # set ytics nomirror
 
