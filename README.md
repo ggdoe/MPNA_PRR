@@ -113,7 +113,7 @@ Une fois le fichier `run_config.cfg` modifié, il suffit de lancer `./run_bench.
 
 * Compilateurs `gcc` avec les librairies `OpenBLAS` et `OpenMPI` et `icc` avec les librairies `MKL` et `Intel MPI`
 * Gnuplot pour les graphiques
-* MatrixMarket et [Catonmat](https://catonmat.net/tools/generate-symmetric-matrices) pour l'obtention de matrices symétriques
+* MatrixMarket et Matlab pour l'obtention de matrices symétriques
 * Visual Studio Code et VIM pour l'édition de texte
 * Git et Github pour le versioning et l'hébergement des fichiers
 * Overleaf (et donc LaTeX) pour la rédaction du rapport
