@@ -11,6 +11,7 @@ echo $path
 
 box_str="plot"
 box_str_mean="plot"
+box_str_iter="plot"
 declare -i COUNTER=1
 
 for i in $path/*.dat; do
@@ -19,8 +20,10 @@ for i in $path/*.dat; do
     sed "s#FILENAME#${i%.*}#;s#OUTPUT#${i%.*}#" timeplot.gp | gnuplot
     box_str="$box_str \"<awk '\$1<$maxit{print}' $i\" using ($COUNTER):(\$2 / 1e6),"
     box_str_mean="$box_str_mean \"<awk '\$1<$maxit{print}' $i\" using ($COUNTER):(\$2 / 1e3 / \$1),"
+    box_str_iter="$box_str_iter \"<awk '\$1<$maxit{print}' $i\" using ($COUNTER):1,"
     COUNTER+=1
 done
 
 cat boxplot.gp - <<< $box_str | sed "s#FILENAME#${i%.*}#;s#OUTPUT#$path/boxplot.png#" | gnuplot
 cat boxplot_mean.gp - <<< $box_str_mean | sed "s#FILENAME#${i%.*}#;s#OUTPUT#$path/boxplot_mean.png#" | gnuplot
+cat boxplot_iter.gp - <<< $box_str_iter | sed "s#FILENAME#${i%.*}#;s#OUTPUT#$path/boxplot_iter.png#" | gnuplot
