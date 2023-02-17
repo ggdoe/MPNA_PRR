@@ -15,7 +15,8 @@ filename="stats_iteration.data"
 # set boxwidth  0.5
 # set pointsize 0.5
 
-configfile=system("cut --output-delimiter=' - ' -f5,6,7 16_icc_mpi-16_omp-16.cfg")
+configfile=system("cut --output-delimiter=' - ' -f2,5,6,7 9_icc_mpi-4_omp-16.cfg")
+# configfile=system("cut --output-delimiter=' - ' -f3,5,6,7 16_icc_mpi-16_omp-16.cfg")
 
 set title "Durée de calcul par itérations\n" . configfile
 set grid
@@ -26,7 +27,9 @@ set grid
 # set xtics nomirror
 # set ytics nomirror
 
-set ylabel "temps (s)"
+set ylabel "Temps (ms)"
+# set xlabel "Nombre de processus MPI"
+set xlabel "Nombre de thread OMP"
 
 plot filename u 1:($2/1e3):($3/1e3):($4/1e3) w errorlines t ""
 # pause -1

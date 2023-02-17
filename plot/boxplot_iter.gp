@@ -15,20 +15,21 @@ set style data boxplot
 set boxwidth  0.5
 set pointsize 0.5
 
-configfile=system("cut --output-delimiter=' - ' -f5,6,7 'FILENAME.cfg'")
+configfile=system("cut --output-delimiter=' - ' -f3,5,6,7 'FILENAME.cfg'")
 
 set title "Boxplot nombre d'itérations\n" . configfile
 set grid
 
 unset key
 # set border 2
-set xtics ("mpi=1 - omp=1" 1, "mpi=1 - omp=8" 2, "mpi=8 - omp=16" 3) scale 0.0
+# set xtics ("mpi=1 - omp=1" 1, "mpi=1 - omp=8" 2, "mpi=8 - omp=16" 3) scale 0.0
 # set xtics nomirror
 # set ytics nomirror
 
 set ylabel "Nombre d'itérations"
+set xlabel "Nombre de processus MPI"
 
-set logscale y
+# set logscale y
 # set yrange [0:100]
 
 
